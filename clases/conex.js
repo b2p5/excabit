@@ -1,0 +1,92 @@
+//Trabaja con NowNodes
+//https://documenter.getpostman.com/view/13630829/TVmFkLwy#53f3a035-507d-47c1-81c2-f0dea88dacb9
+//
+//Aparartados: GET get transaction y GET get address
+
+
+class Conex{
+
+    constructor(url){
+
+        this.url            = url;
+        this.respuesta      = Array();
+
+        this.myHeaders      = new Headers();
+        this.myHeaders.append("api-key", "d3173f71-8546-4469-8bd6-d0982edd963d");
+        this.requestOptions = {
+                                method        : 'GET',
+                                headers       : this.myHeaders,
+                                redirect      : 'follow'
+                              };
+
+    }//fin constructor
+
+    async getTxNN ( idTx ) {
+
+        let datos;
+        await fetch("https://btcbook.nownodes.io/api/v2/tx/" + idTx , this.requestOptions)
+            .then(response => {
+                               datos = response.json();
+                               divGifAnimado.show();  
+                              })
+            .catch(error => alert( error))
+            .catch(error => console.log('Error: ', error));
+ 
+
+        return datos;
+
+    }// fin de getTxNN ( idTx )       
+
+
+    async getAddrNN(idAddr) {
+
+        let datos;
+        await fetch("https://btcbook.nownodes.io/api/v2/address/" + idAddr , this.requestOptions)
+            .then(response => { 
+                                datos = response.json();
+                                divGifAnimado.show();
+                              })
+            .catch(error => alert( error))
+            .catch(error => console.log('error', error));
+
+                
+        return datos;
+  
+    }//fin getAddrNN(idAddr)
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    // async getTx ( idTx ) {
+
+    //     this.url               = 'https://blockchain.info/rawtx/' + idTx ;
+    //     this.respuesta         = await axios.get( this.url );
+
+    //     return this.respuesta ;
+    
+    // }// fin de getTx    
+
+
+    // async getAddr(idAddr) {
+
+    //     this.url               = 'https://blockchain.info/rawaddr/' + idAddr;
+    //     this.respuesta         = await axios.get( this.url );
+            
+    //     return this.respuesta;
+        
+    // }//fin async getAddr(idAddr)
+    
+
+
+  
+
+} //fin de class Conex

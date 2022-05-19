@@ -370,7 +370,20 @@
 }
 
 #div_ayuda{
-
   margin-top: -4000px;
   
+}
+
+.literalAyuda{
+  font-size : 22px;
+  font-family: 'Roboto';
+}
+
+.divAyuda{
+  font-size:15px;
+  color: rgba(0, 0, 0, 0.849);
+}
+.divAyuda2{
+  font-size:15px;
+  color: rgba(0, 0, 0, 0.849); 
 }

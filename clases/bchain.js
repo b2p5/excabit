@@ -889,24 +889,30 @@ class Bchain  {
 
 
     contenidoAyuda(ancho , alto)                            {
+        let miMenu;
 
         divAyuda      = createDiv(' ') ;
         divAyuda.position(ayudaVentana.x + 20 ,70); 
         divAyuda.size(ancho , alto);
+        divAyuda.addClass("divAyuda");
 
-        divAyuda.style('font-size', '15px');
-        divAyuda.style('color', '#000');
+        // bAyudaDespImp.mousePressed(this.muestraAyuda);
+        // bAyudaDespImp.position(200,100);
 
         divAyuda.html('<h2>Ayuda</h2>', true);
 
-        let miMenu = "<dl>"+
+        miMenu =    "<dl>"+
 
                         "<dt>Desplegar Inputs / Outputs de un Tx</dt>" +
                             "<dd><b>Doble Click</b> sobre Tx</br></dd>" +
+                            "<input id ='botonAyuda1'  type ='submit'  value  ='Vídeo' "+     
+                                   "onclick=muestraAyuda('desplegarInputs.mp4')>" +
                             "<dd>&nbsp;</dd>" + 
 
                         "<dt>Mover Tx</dt>" +
                             "<dd><b>Click</b> sobre Tx y arrastrar</dd>" +
+                            "<input id ='botonAyuda1'  type ='submit'  value  ='Vídeo' "+     
+                                   "onclick=muestraAyuda('desplegarInputs.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Zoom</dt>" +
@@ -1973,7 +1979,11 @@ class Bchain  {
       
     }//fin  muestraVentanaAddr   
 
-    muestraAyuda()                                          {
+    muestraAyuda( video )                                   {
+
+        let videoTrab  ;
+
+        videoTrab = sitioVideos + video;
 
         if( !mostrandoAyuda ){
 
@@ -1983,91 +1993,60 @@ class Bchain  {
 
             this.muestraOcultaTodosElementos( 'muestra' );
 
-            // muestraPie        = false;
-
-            // // metodo ocultaTodosElementos(0 ó 1)
-            // document.getElementById("defaultCanvas0").style.visibility     = 'hidden';
             
             
             divAyuda2.position(20, 30);
+            divAyuda2.addClass("divAyuda2");
 
-            divAyuda2.style('font-size', '15px');
-            divAyuda2.style('color', '#000000');
-    
-
-            //myBchain.dibujaTxsAddrs();
 
             let margenVentana                  = 30;
             
             
-            // ayudaVentana.ancho                 = 300 - margenVentana;
             ayudaVentana.ancho                 = windowWidth - 40  ;
-            // ayudaVentana.alto                  = windowHeight  - margenCanvas.pie - 
-            //                                      margenVentana - ventanaPie.alto - 15; 
             ayudaVentana.alto                  = windowHeight - 50;
-            ayudaVentana.x                     = windowWidth - ayudaVentana.ancho - margenVentana - 10;
-            ayudaVentana.x                     = 20;
-            ayudaVentana.y                     = 17;
-            
-            ayudaVentana.transparenciaVentana  = 240;
-            ayudaVentana.tranparenciaMargen    = 100;
-            ayudaVentana.redondeo              = 7;
-            
+
+            // ayudaVentana.x                     = windowWidth - ayudaVentana.ancho - margenVentana - 10;
+            // ayudaVentana.x                     = 20;
+            // ayudaVentana.y                     = 17;
+            // ayudaVentana.transparenciaVentana  = 240;
+            // ayudaVentana.tranparenciaMargen    = 100;
+            // ayudaVentana.redondeo              = 7;
             // ayudaVentana.update();
             // ayudaVentana.display();
+
 
             divAyuda2.size(ayudaVentana.ancho, ayudaVentana.alto);
             
             myBchain.contenidoAyuda( ayudaVentana.ancho, ayudaVentana.alto );
 
-            // let divVideo = createDiv('Vídeo explicativo');
-            // divVideo.position(500 ,  100);
             playing         = false;
-            literalAyuda    = createP('Ayuda General');
-            literalAyuda.style('font-size', '22px');
-            literalAyuda.style('font-family', 'Roboto');
-            literalAyuda.position(390 , 90);  
+            literalAyuda    = createP('Vídeos de Ayuda');
+            literalAyuda.addClass("literalAyuda");
+            literalAyuda.position(490 , 90);  
 
-            //Sombra del vídeo
-            // strokeWeight(3);
-            // stroke(0);
-            // fill(0)
-            // this.sombra(5 , 10);
-            // ellipse (
-            //         370 ,  80,
-            //         620, 420
-            //         );
-            ayudaGeneral    = createVideo( ['https://b2p5.github.io/excabit/media/presentacionExcabit.mp4']);
-            ayudaGeneral.position(390 ,  100);
+ 
+            ayudaGeneral    = createVideo( videoTrab );
+            ayudaGeneral.position(490 ,  120);
             ayudaGeneral.size(600, 400);
-            // this.sombra(0 , 0);
 
             botonPlay       = createButton('play');
-            botonPlay.position(390 ,  460);
+            botonPlay.position(490 ,  500);
             botonPlay.mousePressed(this.toggleVid); 
+
+            //bAyudaDespImp.position(390 ,  540);
       
       
         } else if( mostrandoAyuda ){
 
             mostrandoAyuda                      = false;
+            divAyuda.position(-20000, -20000);
+            //document.getElementsByClassName("divAyuda")[0].style.visibility = 'hidden';
+            // divAyuda2.position(-20000, -20000);
 
             document.getElementById("defaultCanvas0").style.top = '50px';
             this.muestraOcultaTodosElementos( 'oculta' );
 
-            // muestraPie        = true;
-            
-            // // metodo ocultaTodosElementos(0 ó 1)
-
-            // document.getElementById("defaultCanvas0").style.visibility     = 'visible';
-            // divAyuda2.position(-20000, -20000);            
             myBchain.dibujaTxsAddrs();            
-      
-            //Semaforos
-            
-            // ayudaVentana.oculta();   
-            
-            
-            //myBchain.dibujaTxsAddrs();
       
       
         }//fin if( !mostrandoAyuda )

@@ -189,6 +189,8 @@ let marcaParaEliminar;
 let estadoAreaSelec;
 
 
+
+
 //Transación y Dirección de partida
 let idTx ;
 idTx                = "1d053e14643494a05e9a4279c42ec9f8924d52100e2e229c5e0174742d50e912";
@@ -202,6 +204,10 @@ let playing;
 let literalAyuda;
 let ayudaGeneral;
 let botonPlay;
+//Sitio de alojamiento de los vídeos
+let sitioVideos ;
+let bAyudaDespImp ;
+
 
 //Tratamiento del estado
 let previousState;
@@ -210,8 +216,7 @@ let state = [];
 
 
 function preload()                                    {
-  imagenBg = loadImage('https://b2p5.github.io/working1/media/fondoPantalla.jpg');
-  //imagenBg = loadImage('./media/fondoPantalla_1.jpg');
+  imagenBg = loadImage('https://b2p5.github.io/excabit/media/fondoPantalla.jpg');
 }//fin function preload
 
 
@@ -326,6 +331,9 @@ function setup()                                      {
   //Crear div Ayuda y ocultarlo
   divAyuda2         = createElement('div');
   divAyuda2.addClass("divAyuda");
+  bAyudaDespImp     = createButton('Desplegar Inputs');
+  bAyudaDespImp.mousePressed(muestraAyuda);
+  bAyudaDespImp.position(-20000 ,  -20000);
 
 
   //Inicializamos Arrays
@@ -365,6 +373,7 @@ function setup()                                      {
   //Arrancamos instancia de captura de vídeo
   P5Capture.getInstance();
 
+  sitioVideos = 'https://b2p5.github.io/excabit/media/';
 
   //Arranca Estado -- Ctrl + Z
   saveState();
@@ -999,8 +1008,18 @@ function getTx()                                      {
 
 }//fin function getTx()
 
-function muestraAyuda()                               {
-  myBchain.muestraAyuda();
+function muestraAyuda(video)   {
+
+  
+  if (video){
+    mostrandoAyuda  = false;
+    myBchain.muestraAyuda(video);
+
+  }else{
+    myBchain.muestraAyuda('presentacionExcabit.mp4');
+
+  }
+
 
 }//fin function muestraAyuda
 

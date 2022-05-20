@@ -248,7 +248,7 @@ function setup()                                      {
 
   literalPie         = createP('Tx de prueba. Puede seleccionar otro Tx.<br> ' +
                                'Resolución mínima de pantalla 1280*520 píxeles. <br> ' +
-                               'En botón <b>Ayuda</b> tiene información sobre el manejo de la herramienta.' 
+                               'En botón <b>Ayuda</b>, en la siguiente pantalla, tiene información sobre el manejo de la herramienta.' 
                               );
   literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
   literalPie.addClass("literalPie");

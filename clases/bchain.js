@@ -1995,6 +1995,7 @@ class Bchain  {
     muestraAyuda( video )                                   {
 
         videoTrab = sitioVideosAyuda + video;
+    
 
         if( !mostrandoAyuda ){
 
@@ -2011,21 +2012,21 @@ class Bchain  {
             myBchain.contenidoAyuda( windowWidth - 40, windowHeight - 50 );
             
             //Parte de la drcha. ayuda -> vídeo
-            literalAyuda.position(490 , 90);  
+            literalAyuda.position(490 , yPantallaVideo - 60 );  
 
  
             playing         = true;
-            if(ayudaGeneral) ayudaGeneral.remove();
-            ayudaGeneral    = createVideo( videoTrab );
-            ayudaGeneral.id("idAyudaGeneral");
-            ayudaGeneral.addClass("ayudaGeneral");
-            ayudaGeneral.position(490 ,  140);
-            ayudaGeneral.size(700, 400);
-            ayudaGeneral.loop();
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( videoTrab );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.addClass("pantallaVideo");
+            pantallaVideo.position(490 , yPantallaVideo );
+            pantallaVideo.size(700, 400);
+            pantallaVideo.loop();
             botonPlay.html('pause');
            
 
-            botonPlay.position(490 ,  550);
+            botonPlay.position(490, yPantallaVideo + 420 );
             botonPlay.mousePressed(this.toggleVid); 
       
       
@@ -2041,7 +2042,7 @@ class Bchain  {
             document.getElementById("defaultCanvas0").style.top         = '50px';
             this.muestraOcultaTodosElementos( 'oculta' );
 
-            ayudaGeneral.remove();
+            pantallaVideo.remove();
 
             myBchain.dibujaTxsAddrs();            
       
@@ -2088,7 +2089,7 @@ class Bchain  {
 
         }else if (estado == 'oculta'){
 
-            ayudaGeneral.position(xyPosicion ,  xyPosicion);
+            pantallaVideo.position(xyPosicion ,  xyPosicion);
             botonPlay.position(xyPosicion ,  xyPosicion);
             literalAyuda.position(xyPosicion ,  xyPosicion);
             document.getElementById("defaultCanvas0").style.visibility     = 'visible';
@@ -2376,11 +2377,11 @@ class Bchain  {
 
     toggleVid()                                             {
         if (playing) {
-            ayudaGeneral.pause();
+            pantallaVideo.pause();
             botonPlay.html('play');
             
         } else {
-            ayudaGeneral.loop();
+            pantallaVideo.loop();
             botonPlay.html('pause');
     
         }//fin  if (playing)
@@ -2763,17 +2764,28 @@ function cambiaVideo( video ){
 
     videoTrab       = sitioVideosAyuda + video;
 
-    if(ayudaGeneral){
-        ayudaGeneral.remove();
-    }
+    if(pantallaVideo){
+        pantallaVideo.remove();
+    }//fin if(pantallaVideo)
+
+    //Colocamos el vídeo, literal y otón a la altura de mouseY
+    if (mouseY < 140) {
+        yPantallaVideo = 140;
+    } else {
+        yPantallaVideo = mouseY;
+    }//fin if (mouseY < 140)
+
+    literalAyuda.position(490 , yPantallaVideo - 60 ); 
 
     playing         = true;
-    ayudaGeneral    = createVideo( videoTrab );
-    ayudaGeneral.id("idAyudaGeneral");
-    ayudaGeneral.addClass("ayudaGeneral");
-    ayudaGeneral.position(490 ,  140);
-    ayudaGeneral.size(700, 400);
-    ayudaGeneral.loop();
+    pantallaVideo   = createVideo( videoTrab );
+    pantallaVideo.id("idPantallaVideo");
+    pantallaVideo.addClass("pantallaVideo");
+    pantallaVideo.position(490, yPantallaVideo );
+    pantallaVideo.size(700, 400);
+    pantallaVideo.loop();
     botonPlay.html('pause');
+
+    botonPlay.position(490, yPantallaVideo + 420 );
 
 }//fin cambiaVideo

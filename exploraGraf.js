@@ -202,7 +202,8 @@ let imagenBg;
 //Vídeos de Ayuda
 let playing;
 let literalAyuda;
-let ayudaGeneral;
+let pantallaVideo;
+let yPantallaVideo;
 let botonPlay;
 //Sitio de alojamiento de los vídeos
 let sitioVideosAyuda ;
@@ -393,6 +394,7 @@ function setup()                                      {
   P5Capture.getInstance();
 
   sitioVideosAyuda = 'https://b2p5.github.io/excabit/media/videosAyuda/';
+  yPantallaVideo   = 140;
 
   //Arranca Estado -- Ctrl + Z
   saveState();

@@ -92,7 +92,7 @@
 .inputTx{
   transition: all 1.5s ease;
   color: rgba(8, 8, 8, 0.733);
-  border: 3px solid rgb(95, 118, 219);
+  border: 3px solid rgb(213, 119, 34);
   font-size   : 20px;
   outline: none;
   border-radius: 6px;
@@ -106,7 +106,7 @@
 .botonBuscar{
   transition: all .5s ease;
   color: rgba(8, 8, 8, 0.733);
-  border: 3px solid rgb(95, 118, 219);
+  border: 3px solid rgb(213, 119, 34);
   text-align: center;
   line-height: 1;
   background-color : transparent;
@@ -124,7 +124,7 @@
   /* transition: all .5s ease; */
   font-family : 'Roboto', sans-serif;
   font-weight : bold;
-  color: #ffffff;
+  color: #fff;
   font-size   : 15px;
   outline: none;
   height: 47px;

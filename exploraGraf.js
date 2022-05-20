@@ -245,8 +245,10 @@ function setup()                                      {
   botonBuscar.addClass("botonBuscar");
   botonBuscar.mousePressed(getTx);
 
-  literalPie         = createP('Tx de prueba. Puede seleccionar otro Tx.<br><br>' +
-                               'En botón <b>Ayuda</b> tiene información sobre el manejo de la herramienta.');
+  literalPie         = createP('Tx de prueba. Puede seleccionar otro Tx.<br> ' +
+                               'Resolución mínima de pantalla 1280*520 píxeles. <br> ' +
+                               'En botón <b>Ayuda</b> tiene información sobre el manejo de la herramienta.' 
+                              );
   literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
   literalPie.addClass("literalPie");
 
@@ -578,7 +580,7 @@ window.addEventListener("dblclick", async function(e) {
         mostrandoAyuda      = false;
 
         //Cambiamos color Tx pinchada
-        posiTxs[i].bgColor = {'r':70, 'g':120, 'b':70};
+        posiTxs[i].bgColor = {'r':232, 'g':132, 'b':32};
 
 
         await myBchain.getDatos    ( idTxADesplegar, i );

@@ -71,7 +71,7 @@ class Ventana  {
     this.ancho        = 0 ;
     this.alto         = 0 ;
     
-    divAyuda.position(-10000 , -10000);
+    //divAyuda.position(-10000 , -10000);
 
     this.update();
 

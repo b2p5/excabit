@@ -144,7 +144,7 @@ let textoEspaciado;
 let inputTx, botonBuscar, nombreApp;
 let canvasInputTx, canvasTrab;
 let divAyuda;
-let divAyuda2;
+//let divAyudaVideo;
 let divOpciones;
 let divGifAnimado;
 let ventanaPie;
@@ -205,8 +205,9 @@ let literalAyuda;
 let ayudaGeneral;
 let botonPlay;
 //Sitio de alojamiento de los vídeos
-let sitioVideos ;
-let bAyudaDespImp ;
+let sitioVideosAyuda ;
+//let bAyudaDespImp ;
+let videoTrab  ;
 
 
 //Tratamiento del estado
@@ -245,7 +246,7 @@ function setup()                                      {
 
   
   //Inicializamos botones Ayuda y Opciones de Cabecera
-  myBchain.contenidoAyuda(0 , 0);
+  ///myBchain.contenidoAyuda(0 , 0);
 
   myVentana.oculta();
   ayudaVentana.oculta();
@@ -328,12 +329,22 @@ function setup()                                      {
 
   myBchain.mueveFueraColorTag();
 
-  //Crear div Ayuda y ocultarlo
-  divAyuda2         = createElement('div');
-  divAyuda2.addClass("divAyuda");
-  bAyudaDespImp     = createButton('Desplegar Inputs');
-  bAyudaDespImp.mousePressed(muestraAyuda);
-  bAyudaDespImp.position(-20000 ,  -20000);
+
+  divAyuda        = createElement('div') ;
+  divAyuda.addClass("divAyuda");
+  divAyuda.id("idDivAyuda");
+  divAyuda.position(-20000 ,  -20000);
+
+  literalAyuda    = createP('Vídeos de Ayuda');
+  literalAyuda.addClass("literalAyuda");
+  literalAyuda.id("idLiteralAyuda");
+  literalAyuda.position(-20000 ,  -20000);
+
+  botonPlay       = createButton('play');
+  botonPlay.addClass("botonPlay");
+  botonPlay.id("idBotonPlay");
+  botonPlay.position(-20000 ,  -20000);
+
 
 
   //Inicializamos Arrays
@@ -373,7 +384,7 @@ function setup()                                      {
   //Arrancamos instancia de captura de vídeo
   P5Capture.getInstance();
 
-  sitioVideos = 'https://b2p5.github.io/excabit/media/';
+  sitioVideosAyuda = 'https://b2p5.github.io/excabit/media/videosAyuda/';
 
   //Arranca Estado -- Ctrl + Z
   saveState();
@@ -893,7 +904,7 @@ window.addEventListener("click",          function(e) {
       ( key === 'v' || key === 'V' )
     ){ 
 
-      myBchain.controlesVideo();
+      myBchain.controlesGrabaVideo();
 
   }//fin if ( keyIsPressed == true) ((e.key == 'v')|| (e.key == 'V'))
     
@@ -1008,17 +1019,27 @@ function getTx()                                      {
 
 }//fin function getTx()
 
-function muestraAyuda(video)   {
+function muestraAyuda(video , origen)   {
 
-  
-  if (video){
-    mostrandoAyuda  = false;
+  if (origen == 'cabecera'){
     myBchain.muestraAyuda(video);
 
-  }else{
-    myBchain.muestraAyuda('presentacionExcabit.mp4');
+  }else if (origen == 'contenidoAyuda'){
+    mostrandoAyuda  = !mostrandoAyuda;
+    myBchain.muestraAyuda(video);
 
   }
+
+  
+
+  // if (video){
+  //   mostrandoAyuda  = false;
+  //   myBchain.muestraAyuda(video);
+
+  // }else{
+  //   myBchain.muestraAyuda('presentacionExcabit.mp4');
+
+  // }
 
 
 }//fin function muestraAyuda

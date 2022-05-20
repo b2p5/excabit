@@ -387,3 +387,10 @@
   font-size:15px;
   color: rgba(0, 0, 0, 0.849); 
 }
+
+#botonVideosAyuda{
+  font-size:17px;
+  color: rgba(27, 24, 201, 0.849); 
+  width: 107px;
+  height: 25px;
+}

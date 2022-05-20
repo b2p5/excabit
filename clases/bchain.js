@@ -889,70 +889,102 @@ class Bchain  {
 
 
     contenidoAyuda(ancho , alto)                            {
+        
         let miMenu;
+        let boton1, boton2;
 
-        divAyuda      = createDiv(' ') ;
+
+        document.getElementById("idDivAyuda").style.visibility      = 'visible';
+        document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
+        document.getElementById("idBotonPlay").style.visibility     = 'visible';
+        
         divAyuda.position(ayudaVentana.x + 20 ,70); 
         divAyuda.size(ancho , alto);
-        divAyuda.addClass("divAyuda");
 
-        // bAyudaDespImp.mousePressed(this.muestraAyuda);
-        // bAyudaDespImp.position(200,100);
 
-        divAyuda.html('<h2>Ayuda</h2>', true);
 
-        miMenu =    "<dl>"+
+// boton1= createButton('Ver video 1');
+// boton1.mousePressed(this.cambiaVideo);
+
+// boton2= createButton('Ver video 2');
+// boton2.mousePressed(this.cambiaVideo);
+
+
+
+        miMenu =    "<h2>Ayuda</h2>" +
+
+                    "<dl>"+
 
                         "<dt>Desplegar Inputs / Outputs de un Tx</dt>" +
                             "<dd><b>Doble Click</b> sobre Tx</br></dd>" +
-                            "<input id ='botonAyuda1'  type ='submit'  value  ='Vídeo' "+     
-                                   "onclick=muestraAyuda('desplegarInputs.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'   onclick=this.cambiaVideo('desplegarInputs.mp4'); )/></dd>" +
+                            "<dd><button id ='botonVideosAyuda'      onClick=this.cambiaVideo('desplegarInputs.mp4' )/></dd>" +
                             "<dd>&nbsp;</dd>" + 
 
                         "<dt>Mover Tx</dt>" +
                             "<dd><b>Click</b> sobre Tx y arrastrar</dd>" +
-                            "<input id ='botonAyuda1'  type ='submit'  value  ='Vídeo' "+     
-                                   "onclick=muestraAyuda('desplegarInputs.mp4')>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=cambiaVideo('moverTx.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Zoom</dt>" +
                             "<dd><b>Rueda </b> del ratón</dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('zoomCanvas.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Selec. / Deselec. un Tx</dt>" +
                             "<dd><b>Shift + Click</b> sobre Tx o Botón <b>select.</b> </br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('selecUnTx.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Selec. / Deselec. Txs dentro de un Área </dt>" +
                             "<dd><b>z o Z + Click pulsado</b> sobre un área con Txs </br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('selecTxsArea.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Etiquetar Tx</dt>" +
                             "<dd><b>Ctrl + Click</b> sobre Tx</br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('etiquetaTx.mp4')>" +
                             "<dd>&nbsp;</dd>" +  
 
                         "<dt>Colorear Tx</dt>" +
                             "<dd><b>Alt + Click</b> sobre Tx</br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('coloreaTx.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Mostrar Información de Tx o Addr</dt>" +
                             "<dd><b>i o I + Click</b> sobre Tx o Addr</br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('informacionTxAddr.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Ocultat Información de Tx o Addr</dt>" +
                             "<dd><b>Click</b> sobre cualquier Tx</br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('ocultaInformacion.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Marcar / Desmarcar para eliminar  </dt>" +
                             "<dd><b>d o D + Click</b>  o Botón <b>eliminar</b> </br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('marcarEliminar.mp4')>" +
                             "<dd>&nbsp;</dd>" +                            
                             
                         "<dt>Imprimir</dt>" +
                             "<dd><b>p o P + Click</b>  o Botón <b>imprimir</b> </br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('imprimirCanvas.mp4')>" +
                             "<dd>&nbsp;</dd>" +
                             
                         "<dt>Grabar vídeo</dt>" +
                             "<dd><b>v o V + Click</b>  o Botón <b>vídeo</b> </br></dd>" +
+                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
+                                   "onclick=muestraAyuda('grabarVideo.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                      "</dl>"  +
@@ -962,12 +994,32 @@ class Bchain  {
                      "<b>Botones barra inferior :</b> <br>" +
                      " &nbsp;&nbsp;&nbsp;Mouse Over para obtener ayuda." 
                      
-                     ;
+                    ;
 
-        divAyuda.html(miMenu, true);
+        divAyuda.html(miMenu, false);
         
 
     }//fin contenidoAyuda
+
+    cambiaVideo( video ){
+
+        videoTrab       = sitioVideosAyuda + video;
+
+        if(ayudaGeneral){
+            ayudaGeneral.remove();
+        }
+
+        playing         = true;
+        ayudaGeneral    = createVideo( videoTrab );
+        ayudaGeneral.id("idAyudaGeneral");
+        ayudaGeneral.addClass("ayudaGeneral");
+        ayudaGeneral.position(490 ,  120);
+        ayudaGeneral.size(600, 400);
+        ayudaGeneral.loop();
+        botonPlay.html('pause');
+
+    }//fin cambiaVideo
+
 
     editTagTx ( txEditTag )                                 {
 
@@ -1276,10 +1328,6 @@ class Bchain  {
 
         let distanciaRatonCentrocirculo;
 
-        // //Ocultamos ventana de ayuda  NO FUNCIONA
-        // mostrandoAyuda      = false;
-        // ayudaVentana.oculta();     
-        // myBchain.dibujaTxsAddrs();     
           
         for(let i=0; i<txsCirculoRojo.length; i++) {
       
@@ -1605,12 +1653,12 @@ class Bchain  {
         xBoton   += anchoBoton + entreBotones; 
 
         botonVideo.position( xBoton ,  ventanaPie.y + 54 );
-        botonVideo.mousePressed(this.controlesVideo); 
+        botonVideo.mousePressed(this.controlesGrabaVideo); 
         xBoton   += anchoBoton + entreBotones;
 
     }//fin ventanaPie()
 
-    controlesVideo()                                        {
+    controlesGrabaVideo()                                   {
 
         //Ocultamos ventana de ayuda
         mostrandoAyuda      = false;
@@ -1630,7 +1678,7 @@ class Bchain  {
         muestraVideo=true;
       }//fin   if (muestraVideo)  
 
-    }//fin controlesVideo
+    }//fin controlesGrabaVideo
 
     toggleVid()                                             {
         if (playing) {
@@ -1981,70 +2029,51 @@ class Bchain  {
 
     muestraAyuda( video )                                   {
 
-        let videoTrab  ;
-
-        videoTrab = sitioVideos + video;
+        videoTrab = sitioVideosAyuda + video;
 
         if( !mostrandoAyuda ){
 
             mostrandoAyuda                     = true;
 
             document.getElementById("defaultCanvas0").style.top     = '500px';
+            document.getElementById("idDivAyuda").style.visibility = 'visible';
+            document.getElementById("idLiteralAyuda").style.visibility = 'visible';
+            document.getElementById("idBotonPlay").style.visibility = 'visible';
 
             this.muestraOcultaTodosElementos( 'muestra' );
-
             
+            //Parte de la izqda. ayuda
+            myBchain.contenidoAyuda( windowWidth - 40, windowHeight - 50 );
             
-            divAyuda2.position(20, 30);
-            divAyuda2.addClass("divAyuda2");
-
-
-            let margenVentana                  = 30;
-            
-            
-            ayudaVentana.ancho                 = windowWidth - 40  ;
-            ayudaVentana.alto                  = windowHeight - 50;
-
-            // ayudaVentana.x                     = windowWidth - ayudaVentana.ancho - margenVentana - 10;
-            // ayudaVentana.x                     = 20;
-            // ayudaVentana.y                     = 17;
-            // ayudaVentana.transparenciaVentana  = 240;
-            // ayudaVentana.tranparenciaMargen    = 100;
-            // ayudaVentana.redondeo              = 7;
-            // ayudaVentana.update();
-            // ayudaVentana.display();
-
-
-            divAyuda2.size(ayudaVentana.ancho, ayudaVentana.alto);
-            
-            myBchain.contenidoAyuda( ayudaVentana.ancho, ayudaVentana.alto );
-
-            playing         = false;
-            literalAyuda    = createP('Vídeos de Ayuda');
-            literalAyuda.addClass("literalAyuda");
+            //Parte de la drcha. ayuda -> vídeo
             literalAyuda.position(490 , 90);  
-
  
+            playing         = true;
             ayudaGeneral    = createVideo( videoTrab );
+            ayudaGeneral.id("idAyudaGeneral");
+            ayudaGeneral.addClass("ayudaGeneral");
             ayudaGeneral.position(490 ,  120);
             ayudaGeneral.size(600, 400);
-
-            botonPlay       = createButton('play');
-            botonPlay.position(490 ,  500);
+            ayudaGeneral.loop();
+            botonPlay.html('pause');
+           
+            botonPlay.position(490 ,  540);
             botonPlay.mousePressed(this.toggleVid); 
-
-            //bAyudaDespImp.position(390 ,  540);
       
       
         } else if( mostrandoAyuda ){
 
             mostrandoAyuda                      = false;
+
             divAyuda.position(-20000, -20000);
-            //document.getElementsByClassName("divAyuda")[0].style.visibility = 'hidden';
-            // divAyuda2.position(-20000, -20000);
+            document.getElementById("idDivAyuda").style.visibility = 'hidden';
+            document.getElementById("idLiteralAyuda").style.visibility = 'hidden';
+            document.getElementById("idBotonPlay").style.visibility = 'hidden';
 
             document.getElementById("defaultCanvas0").style.top = '50px';
             this.muestraOcultaTodosElementos( 'oculta' );
+
+            ayudaGeneral.remove();
 
             myBchain.dibujaTxsAddrs();            
       
@@ -2093,10 +2122,11 @@ class Bchain  {
             ayudaGeneral.position(xyPosicion ,  xyPosicion);
             botonPlay.position(xyPosicion ,  xyPosicion);
             literalAyuda.position(xyPosicion ,  xyPosicion);
+            document.getElementById("defaultCanvas0").style.visibility     = 'visible';
 
             muestraPie        = true;
             document.getElementById("defaultCanvas0").style.visibility     = 'visible';
-            divAyuda2.position(xyPosicion, xyPosicion); 
+            // divAyudaVideo.position(xyPosicion, xyPosicion); 
             
             
 

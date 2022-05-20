@@ -246,7 +246,8 @@ function setup()                                      {
   botonBuscar.addClass("botonBuscar");
   botonBuscar.mousePressed(getTx);
 
-  literalPie         = createP('Tx de prueba. Puede seleccionar otro Tx.<br> ' +
+  literalPie         = createP(
+                               'Tx de prueba. Puede seleccionar otro Tx.<br> ' +
                                'Resolución mínima de pantalla 1280*520 píxeles. <br> ' +
                                'En botón <b>Ayuda</b>, en la siguiente pantalla, tiene información sobre el manejo de la herramienta.' 
                               );

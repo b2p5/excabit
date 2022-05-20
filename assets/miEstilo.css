@@ -59,7 +59,7 @@
   margin-right: 0;
 }
 
-#botonAyuda{
+#idBotonAyuda{
   /* transition: all .5s ease; */
   color: rgba(8, 8, 8, 0.733);
   border: 3px solid rgb(95, 118, 219);
@@ -69,11 +69,11 @@
   font-size   : 14px;
   outline: none;
   border-radius: 6px;
-  width: 60px;
+  width: 70px;
   height: 30px;
 
 }
-#botonAyuda:hover {
+#idBotonAyuda:hover {
   color: #e6e9ec;
   background-color: rgb(90, 87, 87);
 

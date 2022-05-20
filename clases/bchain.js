@@ -2005,6 +2005,7 @@ class Bchain  {
             document.getElementById("idDivAyuda").style.visibility      = 'visible';
             document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
             document.getElementById("idBotonPlay").style.visibility     = 'visible';
+            document.getElementById("idBotonAyuda").value               = '< Volver';
 
             this.muestraOcultaTodosElementos( 'muestra' );
             
@@ -2038,6 +2039,7 @@ class Bchain  {
             document.getElementById("idDivAyuda").style.visibility      = 'hidden';
             document.getElementById("idLiteralAyuda").style.visibility  = 'hidden';
             document.getElementById("idBotonPlay").style.visibility     = 'hidden';
+            document.getElementById("idBotonAyuda").value               = 'Ayuda';
 
             document.getElementById("defaultCanvas0").style.top         = '50px';
             this.muestraOcultaTodosElementos( 'oculta' );

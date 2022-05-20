@@ -45,7 +45,7 @@ class Ventana  {
     strokeWeight( this.strokeWeight );
 
     //Sombra de la ventana
-    if (this.sombra) myBchain.sombra(6, 8);
+    if (this.sombra) myBchain.sombra(3, 4);
 
     //Ventana exterior
     fill(this.brillo ,this.brillo , this.brillo , this.tranparenciaMargen);

@@ -886,13 +886,9 @@ class Bchain  {
     }//fin recalculaAnguloDistancia
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
     contenidoAyuda(ancho , alto)                            {
         
         let miMenu;
-        let boton1, boton2;
-
 
         document.getElementById("idDivAyuda").style.visibility      = 'visible';
         document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
@@ -903,88 +899,81 @@ class Bchain  {
 
 
 
-// boton1= createButton('Ver video 1');
-// boton1.mousePressed(this.cambiaVideo);
-
-// boton2= createButton('Ver video 2');
-// boton2.mousePressed(this.cambiaVideo);
-
-
-
         miMenu =    "<h2>Ayuda</h2>" +
+
+                    "<input  id ='botonVideosAyuda'      type ='submit'  " +
+                    "value  ='Ver presentación' onclick=cambiaVideo('presentacionExcabit.mp4'); )/>" +
 
                     "<dl>"+
 
                         "<dt>Desplegar Inputs / Outputs de un Tx</dt>" +
                             "<dd><b>Doble Click</b> sobre Tx</br></dd>" +
-                            "<dd><input  id ='botonVideosAyuda'      type ='submit'   onclick=this.cambiaVideo('desplegarInputs.mp4'); )/></dd>" +
-                            "<dd><button id ='botonVideosAyuda'      onClick=this.cambiaVideo('desplegarInputs.mp4' )/></dd>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('desplegarInputs.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" + 
 
                         "<dt>Mover Tx</dt>" +
                             "<dd><b>Click</b> sobre Tx y arrastrar</dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=cambiaVideo('moverTx.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('moverTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Zoom</dt>" +
                             "<dd><b>Rueda </b> del ratón</dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('zoomCanvas.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('zoomCanvas.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Selec. / Deselec. un Tx</dt>" +
                             "<dd><b>Shift + Click</b> sobre Tx o Botón <b>select.</b> </br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('selecUnTx.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('selecTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Selec. / Deselec. Txs dentro de un Área </dt>" +
                             "<dd><b>z o Z + Click pulsado</b> sobre un área con Txs </br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('selecTxsArea.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('selecAreaTxs.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Etiquetar Tx</dt>" +
                             "<dd><b>Ctrl + Click</b> sobre Tx</br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('etiquetaTx.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('etiquetarTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +  
 
                         "<dt>Colorear Tx</dt>" +
                             "<dd><b>Alt + Click</b> sobre Tx</br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('coloreaTx.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('colorearTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Mostrar Información de Tx o Addr</dt>" +
                             "<dd><b>i o I + Click</b> sobre Tx o Addr</br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('informacionTxAddr.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('informacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Ocultat Información de Tx o Addr</dt>" +
                             "<dd><b>Click</b> sobre cualquier Tx</br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('ocultaInformacion.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('sinInformacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Marcar / Desmarcar para eliminar  </dt>" +
                             "<dd><b>d o D + Click</b>  o Botón <b>eliminar</b> </br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('marcarEliminar.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('marcarDesmarcarEliminarTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +                            
                             
                         "<dt>Imprimir</dt>" +
                             "<dd><b>p o P + Click</b>  o Botón <b>imprimir</b> </br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('imprimirCanvas.mp4')>" +
+                            "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
+                            "value  ='Ver vídeo' onclick=cambiaVideo('imprimirCanvas.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
                             
                         "<dt>Grabar vídeo</dt>" +
                             "<dd><b>v o V + Click</b>  o Botón <b>vídeo</b> </br></dd>" +
-                            "<input id ='botonVideosAyuda'  type ='submit'  value  ='Ver vídeo' "+     
-                                   "onclick=muestraAyuda('grabarVideo.mp4')>" +
                             "<dd>&nbsp;</dd>" +
 
                      "</dl>"  +
@@ -1000,26 +989,6 @@ class Bchain  {
         
 
     }//fin contenidoAyuda
-
-    cambiaVideo( video ){
-
-        videoTrab       = sitioVideosAyuda + video;
-
-        if(ayudaGeneral){
-            ayudaGeneral.remove();
-        }
-
-        playing         = true;
-        ayudaGeneral    = createVideo( videoTrab );
-        ayudaGeneral.id("idAyudaGeneral");
-        ayudaGeneral.addClass("ayudaGeneral");
-        ayudaGeneral.position(490 ,  120);
-        ayudaGeneral.size(600, 400);
-        ayudaGeneral.loop();
-        botonPlay.html('pause');
-
-    }//fin cambiaVideo
-
 
     editTagTx ( txEditTag )                                 {
 
@@ -1853,7 +1822,7 @@ class Bchain  {
         if( posiTxs[i].fees         > 0 ) numeroLineas++;
 
         //Si solo hay una línea no mostramos ventana
-        if( numeroLineas == 1 )return;
+        //////if( numeroLineas == 1 )return;
 
       
         anchoVentana        = anchoLiterales + textWidth( miTx )+ (2 * paso)  ;
@@ -2049,6 +2018,7 @@ class Bchain  {
             literalAyuda.position(490 , 90);  
  
             playing         = true;
+            if(ayudaGeneral) ayudaGeneral.remove();
             ayudaGeneral    = createVideo( videoTrab );
             ayudaGeneral.id("idAyudaGeneral");
             ayudaGeneral.addClass("ayudaGeneral");
@@ -2773,4 +2743,24 @@ function myTime(time) {
            date.getHours() + ':' + 
            date.getMinutes();
     //      return date;
-  }//fin miTime
+}//fin miTime
+
+
+function cambiaVideo( video ){
+
+    videoTrab       = sitioVideosAyuda + video;
+
+    if(ayudaGeneral){
+        ayudaGeneral.remove();
+    }
+
+    playing         = true;
+    ayudaGeneral    = createVideo( videoTrab );
+    ayudaGeneral.id("idAyudaGeneral");
+    ayudaGeneral.addClass("ayudaGeneral");
+    ayudaGeneral.position(490 ,  120);
+    ayudaGeneral.size(600, 400);
+    ayudaGeneral.loop();
+    botonPlay.html('pause');
+
+}//fin cambiaVideo

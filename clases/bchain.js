@@ -912,74 +912,74 @@ class Bchain  {
 
                     "<dl>"+
 
-                        "<dt>Desplegar Inputs / Outputs de un Tx</dt>" +
+                        "<dt><h4>Desplegar Inputs / Outputs de un Tx</h4></dt>" +
                             "<dd><b>Doble Click</b> sobre Tx</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('desplegarInputs.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" + 
 
-                        "<dt>Mover Tx</dt>" +
+                        "<dt><h4>Mover Tx</h4></dt>" +
                             "<dd><b>Click</b> sobre Tx y arrastrar</dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('moverTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Zoom</dt>" +
+                        "<dt><h4>Zoom</h4></dt>" +
                             "<dd><b>Rueda </b> del ratón.</dd>" +
                             "<dd>Nota.- Centra imagen antes de iniciar zoom.</dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('zoomCanvas.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Selec. / Deselec. un Tx</dt>" +
+                        "<dt><h4>Selec. / Deselec. un Tx</h4></dt>" +
                             "<dd><b>Shift + Click</b> sobre Tx o Botón <b>select.</b> </br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('selecTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Selec. / Deselec. Txs dentro de un Área </dt>" +
+                        "<dt><h4>Selec. / Deselec. Txs dentro de un Área </h4></dt>" +
                             "<dd><b>z o Z + Click pulsado</b> sobre un área con Txs </br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('selecAreaTxs.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Etiquetar Tx</dt>" +
+                        "<dt><h4>Etiquetar Tx</h4></dt>" +
                             "<dd><b>Ctrl + Click</b> sobre Tx</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('etiquetarTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +  
 
-                        "<dt>Colorear Tx</dt>" +
+                        "<dt><h4>Colorear Tx</h4></dt>" +
                             "<dd><b>Alt + Click</b> sobre Tx</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('colorearTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Mostrar Información de Tx o Addr</dt>" +
+                        "<dt><h4>Mostrar Información de Tx o Addr</h4></dt>" +
                             "<dd><b>i o I + Click</b> sobre Tx o Addr</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('informacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Ocultat Información de Tx o Addr</dt>" +
+                        "<dt><h4>Ocultat Información de Tx o Addr</h4></dt>" +
                             "<dd><b>Click</b> sobre cualquier Tx</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('sinInformacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
-                        "<dt>Marcar / Desmarcar para eliminar  </dt>" +
+                        "<dt><h4>Marcar / Desmarcar para eliminar</h4>  </dt>" +
                             "<dd><b>d o D + Click</b>  o Botón <b>eliminar</b> </br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('marcarDesmarcarEliminarTx.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +                            
                             
-                        "<dt>Imprimir</dt>" +
+                        "<dt><h4>Imprimir</h4></dt>" +
                             "<dd><b>p o P + Click</b>  o Botón <b>imprimir</b> </br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('imprimirCanvas.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
                             
-                        "<dt>Grabar vídeo</dt>" +
+                        "<dt><h4>Grabar vídeo</h4></dt>" +
                             "<dd><b>v o V + Click</b>  o Botón <b>vídeo</b> </br></dd>" +
                             "<dd>&nbsp;</dd>" +
 

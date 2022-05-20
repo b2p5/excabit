@@ -2024,7 +2024,7 @@ class Bchain  {
             pantallaVideo.position(490 , yPantallaVideo );
             pantallaVideo.size(700, 400);
             pantallaVideo.loop();
-            botonPlay.html('pause');
+            botonPlay.html('pausa');
            
 
             botonPlay.position(490, yPantallaVideo + 420 );
@@ -2384,7 +2384,7 @@ class Bchain  {
             
         } else {
             pantallaVideo.loop();
-            botonPlay.html('pause');
+            botonPlay.html('pausa');
     
         }//fin  if (playing)
     
@@ -2786,7 +2786,7 @@ function cambiaVideo( video ){
     pantallaVideo.position(490, yPantallaVideo );
     pantallaVideo.size(700, 400);
     pantallaVideo.loop();
-    botonPlay.html('pause');
+    botonPlay.html('pausa');
 
     botonPlay.position(490, yPantallaVideo + 420 );
 

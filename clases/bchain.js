@@ -957,12 +957,13 @@ class Bchain  {
 
                         "<dt><h4>Mostrar Información de Tx o Addr</h4></dt>" +
                             "<dd><b>i o I + Click</b> sobre Tx o Addr</br></dd>" +
+                            "<dd><b>Cursor</b> sobre Tx o Addr</br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('informacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
 
                         "<dt><h4>Ocultat Información de Tx o Addr</h4></dt>" +
-                            "<dd><b>Click</b> sobre cualquier Tx</br></dd>" +
+                            "<dd>Botón <b> con info.</b></br></dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('sinInformacionTxAddr.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +

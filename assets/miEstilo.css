@@ -87,7 +87,6 @@
   font-size   : 35px;
   outline: none;
   height: 47px;
-
 }
 .inputTx{
   transition: all .7s ease;
@@ -115,11 +114,19 @@
   border-radius: 6px;
   width: 100px;
   height: 44px;
-
 }
 .botonBuscar:hover {
   color: #e6e9ec;
   background-color: rgb(90, 87, 87);
+}
+.literalPie{
+  /* transition: all .5s ease; */
+  font-family : 'Roboto', sans-serif;
+  font-weight : bold;
+  color: #ffffff;
+  font-size   : 15px;
+  outline: none;
+  height: 47px;
 }
 
 
@@ -366,7 +373,6 @@
 
 .p5c-container{
   z-index: 999; 
-  /* background: rgba(7, 28, 54, 0.5); */
 }
 
 #div_ayuda{
@@ -391,6 +397,8 @@
 #botonVideosAyuda{
   font-size:17px;
   color: rgba(27, 24, 201, 0.849); 
-  width: 107px;
-  height: 25px;
+  width: 110px;
+  height: 23px;
+  text-align: center;
+  padding-top: 0px;
 }

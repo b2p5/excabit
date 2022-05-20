@@ -1,3 +1,4 @@
+
 class Bchain  {
 
     constructor()                                           {
@@ -50,6 +51,11 @@ class Bchain  {
 
         //Get en servidor datos de una Tx
         resUnaTx        = await myConex.getTxNN ( idTxTra );
+
+        if (resUnaTx.error){
+            alert( 'Error en: ' + resUnaTx.error );
+            return;
+        }
 
 //console.log(resUnaTx);
 
@@ -902,7 +908,7 @@ class Bchain  {
         miMenu =    "<h2>Ayuda</h2>" +
 
                     "<input  id ='botonVideosAyuda'      type ='submit'  " +
-                    "value  ='Ver presentación' onclick=cambiaVideo('presentacionExcabit.mp4'); )/>" +
+                    "value  ='Presentación' onclick=cambiaVideo('presentacionExcabit.mp4'); )/></br>" +
 
                     "<dl>"+
 
@@ -919,7 +925,8 @@ class Bchain  {
                             "<dd>&nbsp;</dd>" +
 
                         "<dt>Zoom</dt>" +
-                            "<dd><b>Rueda </b> del ratón</dd>" +
+                            "<dd><b>Rueda </b> del ratón.</dd>" +
+                            "<dd>Nota.- Centra imagen antes de iniciar zoom.</dd>" +
                             "<dd><input  id ='botonVideosAyuda'      type ='submit'  " +
                             "value  ='Ver vídeo' onclick=cambiaVideo('zoomCanvas.mp4'); )/></dd>" +
                             "<dd>&nbsp;</dd>" +
@@ -1649,21 +1656,6 @@ class Bchain  {
 
     }//fin controlesGrabaVideo
 
-    toggleVid()                                             {
-        if (playing) {
-            ayudaGeneral.pause();
-            botonPlay.html('play');
-            
-        } else {
-            ayudaGeneral.loop();
-            botonPlay.html('pause');
-    
-        }//fin  if (playing)
-    
-        playing = !playing;
-    
-    }//fin  toggleVid()
-
     imprimeCanvas()                                         {
 
         //Ocultamos ventana de ayuda
@@ -2004,10 +1996,10 @@ class Bchain  {
 
             mostrandoAyuda                     = true;
 
-            document.getElementById("defaultCanvas0").style.top     = '500px';
-            document.getElementById("idDivAyuda").style.visibility = 'visible';
-            document.getElementById("idLiteralAyuda").style.visibility = 'visible';
-            document.getElementById("idBotonPlay").style.visibility = 'visible';
+            document.getElementById("defaultCanvas0").style.top         = '500px';
+            document.getElementById("idDivAyuda").style.visibility      = 'visible';
+            document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
+            document.getElementById("idBotonPlay").style.visibility     = 'visible';
 
             this.muestraOcultaTodosElementos( 'muestra' );
             
@@ -2016,18 +2008,20 @@ class Bchain  {
             
             //Parte de la drcha. ayuda -> vídeo
             literalAyuda.position(490 , 90);  
+
  
             playing         = true;
             if(ayudaGeneral) ayudaGeneral.remove();
             ayudaGeneral    = createVideo( videoTrab );
             ayudaGeneral.id("idAyudaGeneral");
             ayudaGeneral.addClass("ayudaGeneral");
-            ayudaGeneral.position(490 ,  120);
-            ayudaGeneral.size(600, 400);
+            ayudaGeneral.position(490 ,  140);
+            ayudaGeneral.size(700, 400);
             ayudaGeneral.loop();
             botonPlay.html('pause');
            
-            botonPlay.position(490 ,  540);
+
+            botonPlay.position(490 ,  550);
             botonPlay.mousePressed(this.toggleVid); 
       
       
@@ -2036,11 +2030,11 @@ class Bchain  {
             mostrandoAyuda                      = false;
 
             divAyuda.position(-20000, -20000);
-            document.getElementById("idDivAyuda").style.visibility = 'hidden';
-            document.getElementById("idLiteralAyuda").style.visibility = 'hidden';
-            document.getElementById("idBotonPlay").style.visibility = 'hidden';
+            document.getElementById("idDivAyuda").style.visibility      = 'hidden';
+            document.getElementById("idLiteralAyuda").style.visibility  = 'hidden';
+            document.getElementById("idBotonPlay").style.visibility     = 'hidden';
 
-            document.getElementById("defaultCanvas0").style.top = '50px';
+            document.getElementById("defaultCanvas0").style.top         = '50px';
             this.muestraOcultaTodosElementos( 'oculta' );
 
             ayudaGeneral.remove();
@@ -2067,6 +2061,7 @@ class Bchain  {
             inputTx.position(xyPosicion, xyPosicion);
             botonBuscar.position(xyPosicion, xyPosicion);
             nombreApp.position(xyPosicion, xyPosicion);
+            literalPie.position(xyPosicion, xyPosicion);
 
             divGifAnimado.position(xyPosicion, xyPosicion);
 
@@ -2375,6 +2370,20 @@ class Bchain  {
     
     }//fin function intersection(rect1, rect2)
 
+    toggleVid()                                             {
+        if (playing) {
+            ayudaGeneral.pause();
+            botonPlay.html('play');
+            
+        } else {
+            ayudaGeneral.loop();
+            botonPlay.html('pause');
+    
+        }//fin  if (playing)
+    
+        playing = !playing;
+    
+    }//fin  toggleVid()    
 
 
 
@@ -2758,8 +2767,8 @@ function cambiaVideo( video ){
     ayudaGeneral    = createVideo( videoTrab );
     ayudaGeneral.id("idAyudaGeneral");
     ayudaGeneral.addClass("ayudaGeneral");
-    ayudaGeneral.position(490 ,  120);
-    ayudaGeneral.size(600, 400);
+    ayudaGeneral.position(490 ,  140);
+    ayudaGeneral.size(700, 400);
     ayudaGeneral.loop();
     botonPlay.html('pause');
 

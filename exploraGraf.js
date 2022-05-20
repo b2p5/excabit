@@ -141,7 +141,7 @@ let textoSize ;
 let textoEspaciado;
 
 //Inputs
-let inputTx, botonBuscar, nombreApp;
+let inputTx, botonBuscar, nombreApp, literalPie;
 let canvasInputTx, canvasTrab;
 let divAyuda;
 //let divAyudaVideo;
@@ -233,6 +233,7 @@ function setup()                                      {
   nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro - 80);
   nombreApp.addClass("nombreApp");
 
+
   inputTx           = createInput();
   inputTx.size(722);
   inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro);
@@ -243,6 +244,11 @@ function setup()                                      {
   botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.yCentro);
   botonBuscar.addClass("botonBuscar");
   botonBuscar.mousePressed(getTx);
+
+  literalPie         = createP('Tx de prueba. Puede seleccionar otro Tx.<br><br>' +
+                               'En botón <b>Ayuda</b> tiene información sobre el manejo de la herramienta.');
+  literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
+  literalPie.addClass("literalPie");
 
   
   //Inicializamos botones Ayuda y Opciones de Cabecera
@@ -476,8 +482,6 @@ async function draw()                                 {
     //Actualizaos Slider
     sliderTx.value(anchoTx);     
     
-    // relAspectoTx = (altoTx/anchoTx);
-    
 
     for(let i=0; i<posiTxs.length; i++) {
 
@@ -497,7 +501,6 @@ async function draw()                                 {
 
       
     //Centrar antes de hacer zoom
-    //maxMinTx = myBchain.calculaMaxMinTx();  //No es necesario, se calcula en centrarTxsAddrs
     myBchain.centrarTxsAddrs();
 
 
@@ -735,7 +738,6 @@ window.addEventListener("click",          function(e) {
 window.addEventListener("wheel",          function(e) {
 
   if (mostrandoAyuda) return;
-  //marcaParaEliminar = false;
   aplicaZoom        = true;
 
   myBchain.mueveFueraColorTag();
@@ -999,6 +1001,7 @@ function getTx()                                      {
   inputTx.position(-20000, -20000);
   botonBuscar.position(-20000, -20000);
   nombreApp.position(-20000, -20000);
+  literalPie.position(-20000, -20000);
 
   background(222);
 

@@ -29,7 +29,7 @@ class Conex{
                                datos = response.json();
                                divGifAnimado.show();  
                               })
-            .catch(error => alert( error))
+            // .catch(error => alert( error))
             .catch(error => console.log('Error: ', error));
  
 

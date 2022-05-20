@@ -1853,8 +1853,12 @@ class Bchain  {
         fill(myVentana.colorTexto);
         textFont('Roboto');
       
-        
-        text ('TXID: ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
+        if((posiTxs[i].idTx).substring(0,5) == 'Multi'){
+            text ('      ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
+            anchoLiterales -= 70;
+        }else{
+            text ('TXID: ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
+        }//fin 
         text (posiTxs[i].idTx ,                 myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );
         posiY = posiY + paso;
 

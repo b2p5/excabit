@@ -128,6 +128,10 @@
   outline: none;
   height: 47px;
 }
+.literalPie:hover {
+  transition: all .5s ease;
+  color: #050116b2;
+}
 
 
 /* Sliders */

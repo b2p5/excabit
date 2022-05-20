@@ -230,7 +230,7 @@ function setup()                                      {
 
 
   //Elementos de la primera página
-  nombreApp         = createP('Explorador de la Cadena de Bitcoin ( excabit )');
+  nombreApp         = createP('<b>Ex</b>plorador de la <b>Ca</b>dena de <b>Bit</b>coin ( excabit )');
   nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro - 80);
   nombreApp.addClass("nombreApp");
 

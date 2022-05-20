@@ -82,8 +82,8 @@
 /* Primera pantalla */
 .nombreApp{
   /* transition: all .5s ease; */
-  font-family : 'Roboto', sans-serif;
-  font-weight : bold;
+  font-family : 'Roboto' , sans-serif ;
+  /* font-weight : bold; */
   color: #ffffff;
   font-size   : 35px;
   outline: none;

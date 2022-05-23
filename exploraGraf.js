@@ -128,7 +128,7 @@ let aplicaZoom;
 let muestraPie;
 let muestraVideo;
 
-
+let nombrePantalla;
 
 //Variables globales
 let mouseXIni;
@@ -228,6 +228,7 @@ function setup()                                      {
   //Pantalla de entrada
   canvasInputTx     = myCanvas.putCanvas_0 ();
 
+  nombrePantalla = 'primera';
 
   //Elementos de la primera página
   nombreApp         = createP('<b>Ex</b>plorador de la <b>Ca</b>dena de <b>Bit</b>coin ( excabit )');
@@ -606,6 +607,9 @@ window.addEventListener("dblclick", async function(e) {
 });  //fin window.addEventListener("dblclick",         ===>  Despliega Txs hijos
 
 window.addEventListener("mousedown",      function(e) {
+
+    //Si estamos en primera pantalla de petición de Tx no atendemos mouse
+    if (nombrePantalla == 'primera') return;
 
     for(let i=0; i<posiTxs.length; i++) {
 
@@ -992,6 +996,8 @@ function getTx()                                      {
   myVentana.oculta();  
   ayudaVentana.oculta();
   mostrandoAyuda      = false;  
+
+  nombrePantalla = 'segunda';
     
   //Recoge valor del Tx original de la primera pantalla
   idTx = inputTx.value();

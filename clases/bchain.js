@@ -33,21 +33,81 @@ class Bchain  {
                         'numVout'       : 0,
                         'blockTime'     : 0,
                         'fees'          : 0,
+                        'multiTxs'      : [],
+                        'version'       : 0,
+                        'lockTime'      : 0,
+                        
                     });     
                     
-        txOrigen = posiTxs;           
+        txOrigen = posiTxs;    
+        
+        //Ponemos semaforo a verde para traer mas datos de Txs y Addrs
+        estadoDatosTxAddrNN = true;
     
     }//fin putTxInicial()    
 
+    async getDatosTxAddrNN(){
+        //Get datos antes de hacer doubleClick
+        //Recogemos datos de Now Nodes en segundo plano
+
+        let resUnaTx, idTx, yaEstaBajado ;
+        //let resUnaAddr, idAddr;
+
+        for(let i=0; i<posiTxs.length; i++) {
+
+            idTx = posiTxs[i].idTx;
+
+            if((idTx).substring(0,5) == 'Multi'){
+                 continue;
+            }//fin if((idTx).substring(0,4) == 'Multi
+
+            yaEstaBajado = false;
+
+            if(datosTxNN.length == 0) yaEstaBajado = false;
+
+            for(let j=0; j<datosTxNN.length; j++) {
+
+                if( datosTxNN[j].idTx == idTx ){
+                    yaEstaBajado = true;
+                    continue;
+                }//fin if( datosTxNN[j].idTx == idTx 
+
+ 
+            }//fin for(let j=0; j<datosTxNN.length; j++)
+
+            if(!yaEstaBajado){
+
+                resUnaTx = await myConex.getTxNN ( idTx );
+
+                posiTxs[i].blockHeight      = resUnaTx.blockHeight;
+                posiTxs[i].value            = resUnaTx.value;
+                posiTxs[i].numVin           = (resUnaTx.vin).length;
+                posiTxs[i].numVout          = (resUnaTx.vout).length;
+                posiTxs[i].blockTime        = resUnaTx.blockTime;
+                posiTxs[i].fees             = resUnaTx.fees;   
+                posiTxs[i].version          = resUnaTx.version;
+                posiTxs[i].lockTime         = resUnaTx.lockTime;
+
+                divGifAnimado.hide();
+
+            }//fin if(!yaEstaBajado
+
+        }//fin for(let i=0; i<posiTxs.length; i++)
+
+
+        // resUnaAddr      = await myConex.getAddrNN ( idAddr );
+
+        myBchain.dibujaTxsAddrs();
+
+
+    }//fin getDatosTxAddrNN
+
     async getDatos( idTxTra , index )                       {
-
-
+        
         let resUnaTx, resUnaAddr;
         let idAddr, idTxsOut, numTxsMulti; 
         let tipoTx = '1a1';
-
-        //Inicializa datos de la Tx
-        //let blockTx;
+        let arrMultiTxs;
 
         //Get en servidor datos de una Tx
         resUnaTx        = await myConex.getTxNN ( idTxTra );
@@ -59,13 +119,15 @@ class Bchain  {
 
 //console.log(resUnaTx);
 
-        //Recoge datos de la Tx
+        //Recoge datos de la Tx para grabar en posiTxs
         posiTxs[index].blockHeight      = resUnaTx.blockHeight;
         posiTxs[index].value            = resUnaTx.value;
         posiTxs[index].numVin           = (resUnaTx.vin).length;
         posiTxs[index].numVout          = (resUnaTx.vout).length;
         posiTxs[index].blockTime        = resUnaTx.blockTime;
         posiTxs[index].fees             = resUnaTx.fees;
+        posiTxs[index].version          = resUnaTx.version;
+        posiTxs[index].lockTime         = resUnaTx.lockTime;
         
      
                 
@@ -113,6 +175,9 @@ class Bchain  {
                                 'numVout'       : 0,
                                 'blockTime'     : 0,
                                 'fees'          : 0,
+                                'multiTxs'      : [],
+                                'version'       : 0,
+                                'lockTime'      : 0,
                             });
                             
             }//fin if ( !this.buscaPosiTxs ( idTxTra ) 
@@ -134,6 +199,9 @@ class Bchain  {
                                 'numVout'       : 0,
                                 'blockTime'     : 0,
                                 'fees'          : 0,
+                                'multiTxs'      : [],
+                                'version'       : 0,
+                                'lockTime'      : 0,
                             });        
                         
             }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -171,10 +239,16 @@ class Bchain  {
 
             idAddr          = resUnaTx.vout[i].addresses[0];
 
+            
+
             //Get en servidor datos de una Addr
             resUnaAddr      = await myConex.getAddrNN ( idAddr );
 //console.log(resUnaAddr);
-    
+
+            //Array con los txs de una Addr 1aN
+            //(resUnaAddr.txids).slice(0, 9)
+            arrMultiTxs     = resUnaAddr.txids;
+        
             for(let j=0; j<resUnaAddr.txids.length; j++) {
 
 //¿Que pasa cuando txids tiene lenght = 1 y resUnaAddr.txids[j] == idTxTra 
@@ -192,6 +266,7 @@ class Bchain  {
                         numTxsMulti = int(resUnaAddr.txs)-1;
                         idTxsOut    = 'Multi Txs: ' + numTxsMulti + ' - ' + resUnaAddr.totalSent;
                         tipoTx      = '1aN';
+                        
                     }//fin if(resUnaAddr.txs > 2)
 
                     if (!this.#isInArbolTxsAddrs ( idTxTra, idAddr ,  idTxsOut )){
@@ -236,6 +311,9 @@ class Bchain  {
                                                 'numVout'       : 0,
                                                 'blockTime'     : 0,
                                                 'fees'          : 0,
+                                                'multiTxs'      : arrMultiTxs,
+                                                'version'       : 0,
+                                                'lockTime'      : 0,
                                             });
 
                     }//fin if ( !this.buscaPosiTxs ( 'idTxTra'   ) 
@@ -255,6 +333,9 @@ class Bchain  {
                                                 'numVout'       : 0,
                                                 'blockTime'     : 0,
                                                 'fees'          : 0,
+                                                'multiTxs'      : arrMultiTxs,
+                                                'version'       : 0,
+                                                'lockTime'      : 0,
                                             });  
 
                     }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -289,13 +370,18 @@ class Bchain  {
             
         }//fin for(let i=0; i<resUnaTx.vin.length; i++)
 
+        //Ponemos semaforo a verde para traer mas datos de Txs y Addrs
+        estadoDatosTxAddrNN = true;
 
     }//fin getDatos( idTxTra )
 
+
+
+
     putTxsAddrs (idTxTra)                                   {
 
-        //Calcula las posiciones de Txs y Addrs en función del arbolTxsAddrs
-        //Solamente se utiliza en putDimAddr => slider de Addr
+        //Calcula las posiciones AUTOMATICAMENTE de Txs y Addrs a partir de arbolTxsAddrs
+        //Solamente se utiliza en putDimAddr => slider de Addr y en doubleClick sobre Tx
         //obteniendo el ¿ángulo? y la distancia a partir del Tx pinchado (doubleclick)
         //Mejora: si el Tx se ha movido anteriormente no variar el ángulo al cambiar los radios de los Addrs
         //Mejora 2 : No variar nunca el ángulo, recalcularlo cuando se mueve Tx
@@ -364,7 +450,7 @@ class Bchain  {
 
                 //Lo recolocamos si ha sido pinchado anteriormente
                 if( posiTxs[indexTxSatelite].estado != 'pinchado'){
-                    //Put x, y, xCentro, yCentro
+                    //Put x, y, xCentro, yCentro en posiTxs
                     posiTxs[indexTxSatelite].xCentro    = xCentroTxSatelite;
                     posiTxs[indexTxSatelite].yCentro    = yCentroTxSatelite;
 
@@ -422,7 +508,8 @@ class Bchain  {
 
                 //Lo recolocamos si ha sido pinchado anteriormente
                 if( posiTxs[indexTxSatelite].estado != 'pinchado'){
-                    //Put x, y, xCentro, yCentro
+                    //Put x, y, xCentro, yCentro en posiTxs
+                    ////////////////////////////////////////////////////////////////7
                     posiTxs[indexTxSatelite].xCentro    = xCentroTxSatelite;
                     posiTxs[indexTxSatelite].yCentro    = yCentroTxSatelite;
 
@@ -456,9 +543,11 @@ class Bchain  {
             indexTx1            = posiTxs.findIndex(( obj => obj.idTx === idTx1 ));
                 
             if(indexTx1 != -1 ){
+                //Put x1, y1 en posiAddrs
+                ////////////////////////////////////////////////////////////////7
                 posiAddrs[i].x1 = posiTxs[indexTx1].xCentro;
                 posiAddrs[i].y1 = posiTxs[indexTx1].yCentro;
-
+                
             }//fin if(indexTx1)
 
             //Destino
@@ -466,19 +555,50 @@ class Bchain  {
             indexTx2            = posiTxs.findIndex(( obj => obj.idTx === idTx2 ));
 
             if(indexTx2 != -1 ){
+                //Put x2, y2 en posiAddrs
+                ////////////////////////////////////////////////////////////////7
                 posiAddrs[i].x2 = posiTxs[indexTx2].xCentro;
                 posiAddrs[i].y2 = posiTxs[indexTx2].yCentro;
 
             }//fin if(indexTx2)
-
+            
             //Calculamos angulo y distancia con x1, y1, x2, y2  
-            // devuelve [angulo , distancia ]
             //Grabamos en posiAddrs[i].angulo y posiAddrs[i].distancia
+            // if( posiAddrs[i].io == 'I' ){
 
-            //calculaAnguloDistancia(){}
+            //     this.calculaAnguloDistancia( posiAddrs[i].x2, posiAddrs[i].y2,
+            //                                  posiAddrs[i].x1, posiAddrs[i].y1 ,
+            //                                  i  );   
+            //     //Para ver si funciona bien 
+            //     this.calculaXYDesdeAnguloDistancia ( posiAddrs[i].angulo, 
+            //                                          posiAddrs[i].distancia, 
+            //                                          i, 'I' ); 
 
+            // }else if( posiAddrs[i].io == 'O' ){
+            
+            this.calculaAnguloDistancia( 
+                                         posiAddrs[i].x1 , posiAddrs[i].y1, 
+                                         posiAddrs[i].x2 , posiAddrs[i].y2 ,
+                                         i  );  
+                //Para ver si funciona bien 
+            //     this.calculaXYDesdeAnguloDistancia ( posiAddrs[i].angulo, 
+            //                                          posiAddrs[i].distancia, 
+            //                                          i, 'O' ); 
+
+            // }//fin if(posiAddrs[i].io == 'I' 
+
+            // //Para corregir pequeños errores, recalculamos Tx y Addr de los Txs extremos del Addr
+            // let txCalculada         = posiAddrs[i].idTx1;
+            // let indexTxCalculada    = posiTxs.findIndex( (element) => element.idTx === txCalculada);
+            // myBchain.recalculaTxAddr(txCalculada, indexTxCalculada);
+
+            // txCalculada         = posiAddrs[i].idTx2;
+            // indexTxCalculada    = posiTxs.findIndex( (element) => element.idTx === txCalculada);
+            // myBchain.recalculaTxAddr(txCalculada, indexTxCalculada);            
+            
         }//fin for(let i=0; i<posiAddrs.length; i++)
 
+        //myBchain.dibujaTxsAddrs();
               
     }//fin putTxsAddrs ()
 
@@ -514,63 +634,65 @@ class Bchain  {
         //////////////////////////////////////////////////////////
         for(let i=0; i<posiAddrs.length; i++) {
         
-          //LINEA ADDR
-          //////////////////////////////////////////////////////////
-          //Ancho del Addr
-          strokeWeight(posiAddrs[i].ancho);
-        
-          //Color line Addr
-          curveColor = color (  
-                                int( posiAddrs[i].bgColor.r ) , 
-                                int( posiAddrs[i].bgColor.g ) ,
-                                int( posiAddrs[i].bgColor.b ) 
-                             );
-          curveColor.setAlpha(240);
-          stroke(curveColor);
+            //LINEA ADDR
+            //////////////////////////////////////////////////////////
+            //Ancho del Addr
+//Cambiar en funcion del posiAddrs[i].value
 
-          //Elimina / Pone Sombra
-          if (mostrarSombra) this.sombra(2 , 3);
+            strokeWeight(posiAddrs[i].ancho);
+            
+            //Color line Addr
+            curveColor = color (  
+                                  int( posiAddrs[i].bgColor.r ) , 
+                                  int( posiAddrs[i].bgColor.g ) ,
+                                  int( posiAddrs[i].bgColor.b ) 
+                               );
+            curveColor.setAlpha(240);
+            stroke(curveColor);
 
-          line(
-                  posiAddrs[i].x1, posiAddrs[i].y1, 
-                  posiAddrs[i].x2, posiAddrs[i].y2
-              );
+            //Elimina / Pone Sombra
+            if (mostrarSombra) this.sombra(2 , 3);
 
-          //FLECHA ADDR
-          //////////////////////////////////////////////////////////
-          //Punto central entre los dos puntos del addr
-          puntoCentral = createVector (
-                                        Math.min( posiAddrs[i].x1,  posiAddrs[i].x2 ) + 
-                                        Math.abs((posiAddrs[i].x2 - posiAddrs[i].x1)/2)  , 
+            line(
+                    posiAddrs[i].x1, posiAddrs[i].y1, 
+                    posiAddrs[i].x2, posiAddrs[i].y2
+                );
 
-                                        Math.min( posiAddrs[i].y1,  posiAddrs[i].y2 ) + 
-                                        Math.abs((posiAddrs[i].y2 - posiAddrs[i].y1)/2)  
-                                      );
+            //FLECHA ADDR
+            //////////////////////////////////////////////////////////
+            //Punto central entre los dos puntos del addr
+            puntoCentral = createVector (
+                                          Math.min( posiAddrs[i].x1,  posiAddrs[i].x2 ) + 
+                                          Math.abs((posiAddrs[i].x2 - posiAddrs[i].x1)/2)  , 
 
-          angulo = atan(  
-                           (posiAddrs[i].y2 - posiAddrs[i].y1) / 
-                           (posiAddrs[i].x2 - posiAddrs[i].x1)
-                       ); 
+                                          Math.min( posiAddrs[i].y1,  posiAddrs[i].y2 ) + 
+                                          Math.abs((posiAddrs[i].y2 - posiAddrs[i].y1)/2)  
+                                        );
 
-        
+            angulo = atan(  
+                             (posiAddrs[i].y2 - posiAddrs[i].y1) / 
+                             (posiAddrs[i].x2 - posiAddrs[i].x1)
+                         ); 
 
-          if (posiAddrs[i].x1 <= posiAddrs[i].x2){
-            sentido = - 1;
-          }else{
-            sentido =   1;
-          }//fin de if (posiAddrs[i].x1 <= posiAddrs[i].x2)
+            
 
-          verticeA = createVector( puntoCentral.x ,     puntoCentral.y );
-          verticeB = createVector( sentido * arrowSize, 0 );
-          verticeC = createVector( 0,                   sentido * arrowSize ); 
+            if (posiAddrs[i].x1 <= posiAddrs[i].x2){
+              sentido = - 1;
+            }else{
+              sentido =   1;
+            }//fin de if (posiAddrs[i].x1 <= posiAddrs[i].x2)
 
-          translate(puntoCentral.x  ,  puntoCentral.y); 
-          rotate( angulo  - 45  );
+            verticeA = createVector( puntoCentral.x ,     puntoCentral.y );
+            verticeB = createVector( sentido * arrowSize, 0 );
+            verticeC = createVector( 0,                   sentido * arrowSize ); 
 
-          triangle(0, 0, verticeB.x, verticeB.y, verticeC.x, verticeC.y);
+            translate(puntoCentral.x  ,  puntoCentral.y); 
+            rotate( angulo  - 45  );
 
-          rotate( 45  -  angulo );
-          translate(-puntoCentral.x , -puntoCentral.y);
+            triangle(0, 0, verticeB.x, verticeB.y, verticeC.x, verticeC.y);
+
+            rotate( 45  -  angulo );
+            translate(-puntoCentral.x , -puntoCentral.y);
 
         }//fin for(let i=0; i<posiAddrs.length; i++) ADDRs
 
@@ -582,74 +704,102 @@ class Bchain  {
 
         for(let i=0; i<posiTxs.length; i++) {
         
-          //Rectángulo
-          ////////////////////////////////////////
-          squareColor = color (int( posiTxs[i].bgColor.r ) , 
-                               int( posiTxs[i].bgColor.g ) ,
-                               int( posiTxs[i].bgColor.b ) );
-          squareColor.setAlpha(245);
-          fill(squareColor);
-          stroke(3);
+            //Rectángulo
+            ////////////////////////////////////////
+            squareColor = color (int( posiTxs[i].bgColor.r ) , 
+                                 int( posiTxs[i].bgColor.g ) ,
+                                 int( posiTxs[i].bgColor.b ) );
+            squareColor.setAlpha(245);
+            fill(squareColor);
+            stroke(3);
 
-          bordeColor = color (int( posiTxs[i].color.r ) , 
-                              int( posiTxs[i].color.g ) ,
-                              int( posiTxs[i].color.b ) );  
+            bordeColor = color (int( posiTxs[i].color.r ) , 
+                                int( posiTxs[i].color.g ) ,
+                                int( posiTxs[i].color.b ) );  
 
-          stroke(bordeColor);
-          strokeWeight(posiTxs[i].weight);
+            stroke(bordeColor);
+            strokeWeight(posiTxs[i].weight);
 
-          //Elimina / Pone Sombra
-          if (mostrarSombra) this.sombra(5 , 10);
+            //Elimina / Pone Sombra
+            if (mostrarSombra) this.sombra(5 , 10);
 
-          rect( posiTxs[i].x,     posiTxs[i].y, 
-                anchoTx     ,     altoTx , 7);
+            rect( posiTxs[i].x,     posiTxs[i].y, 
+                  anchoTx     ,     altoTx , 7);
 
-          
+            
 
-          //Elimina / Pone Sombra
-          if (mostrarSombra) this.sombra(0 , 0);
+            //Elimina / Pone Sombra
+            if (mostrarSombra) this.sombra(0 , 0);
 
-          //Texto
-          ////////////////////////////////////////
-          //Size
-          textoSize = (16/200) * anchoTx;
-          textSize( textoSize );
-          strokeWeight(2);
+            //Texto
+            ////////////////////////////////////////
+            //Size
+            textoSize = (16/200) * anchoTx;
+            textSize( textoSize );
+            strokeWeight(2);
 
-          stroke(66);
+            stroke(66);
 
-          //ESpaciado
-          textoEspaciado = int(altoTx / numLineasTx);
+            //ESpaciado
+            textoEspaciado = int(altoTx / numLineasTx);
 
-          //Margen Izquierdo Tx
-          margenIzqTx = int(anchoTx * 0.05);
+            //Margen Izquierdo Tx
+            margenIzqTx = int(anchoTx * 0.05);
 
-          //Elimina / Pone Sombra
-          if (mostrarSombra) this.sombra(0);
+            //Elimina / Pone Sombra
+            if (mostrarSombra) this.sombra(0);
 
-          fill(0);
-          drawingContext.shadowBlur = 0;
+            fill(0);
+            drawingContext.shadowBlur = 0;
 
-          //id Tx
-          let idTxCorto;
-          if((posiTxs[i].idTx).substring(0, 5) == 'Multi'){
-            idTxCorto = (posiTxs[i].idTx).substring(6);
-          }else{
-            idTxCorto = this.#acortaIdTx (posiTxs[i].idTx);
-          }//fin if((posiTxs[i].idTx).substring(0,5) == 'Multi'
+            //id Tx
+            let idTxCorto;
+            if((posiTxs[i].idTx).substring(0, 5) == 'Multi'){
+                idTxCorto = (posiTxs[i].idTx).substring(6);
 
-          text (idTxCorto ,        
-                posiTxs[i].x + margenIzqTx, 
-                posiTxs[i].y + textoEspaciado );
+            }else{
 
+                idTxCorto = this.#acortaIdTx (posiTxs[i].idTx);
 
-        
-          //Etiqueta
-          if (posiTxs[i].tagTx){
-            text (posiTxs[i].tagTx , 
+                //blockHeight
+                margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].blockHeight)/2);
+                text ((posiTxs[i].blockHeight).toLocaleString("es-ES") ,        
+                      posiTxs[i].x + margenIzqTx, 
+                      posiTxs[i].y +  (2 * textoEspaciado) - 0 );
+                
+                //blockTime
+                margenIzqTx = (anchoTx/2) - (textWidth(myTime(posiTxs[i].blockTime))/2);
+                text (myTime(posiTxs[i].blockTime) ,        
+                      posiTxs[i].x + margenIzqTx, 
+                      posiTxs[i].y +  (3 * textoEspaciado) - 0 );            
+                
+                //sat/vB – sats
+                margenIzqTx = (anchoTx/2) - (textWidth('sat/vB – sats')/2);
+                text ('sat/vB – sats' ,        
+                    posiTxs[i].x + margenIzqTx, 
+                    posiTxs[i].y +  (4 * textoEspaciado) - 0 );   
+                
+                //version - lockTime
+                margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].version  + ' - ' + posiTxs[i].lockTime)/2);
+                text (posiTxs[i].version  + ' - ' + posiTxs[i].lockTime,        
+                    posiTxs[i].x + margenIzqTx, 
+                    posiTxs[i].y +  (5 * textoEspaciado) - 0 ); 
+                        
+            }//fin if((posiTxs[i].idTx).substring(0,5) == 'Multi'
+
+            //txid
+            margenIzqTx = (anchoTx/2) - (textWidth(idTxCorto)/2);
+            text (idTxCorto ,        
                   posiTxs[i].x + margenIzqTx, 
-                  posiTxs[i].y + (5 * textoEspaciado) - 7 );
-          }//fin if (posiTxs[i].tagTx)
+                  posiTxs[i].y +  (1 * textoEspaciado) - 0 );
+
+            //Etiqueta
+            if (posiTxs[i].tagTx){
+              margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].tagTx)/2);
+              text (posiTxs[i].tagTx , 
+                    posiTxs[i].x + margenIzqTx, 
+                    posiTxs[i].y + (6 * textoEspaciado) - 0 );
+            }//fin if (posiTxs[i].tagTx)
 
         }// fin de for(let i=0; i<posiTx; i++  TXs
 
@@ -719,8 +869,87 @@ class Bchain  {
       
     }//fin recalculaZoomTxAddr
 
+    recalculaTodosTxsAddrs()                                {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////    
+        //Utilizado en mousedownFueraTx
+
+        let txMoviendo;
+        let xCentroMoviendo, yCentroMoviendo;
+    
+        //Recorremos todos los Txs reposicionando sus coordenadas
+        for(let i=0; i<posiTxs.length; i++) {
+
+            //this.recalculaTxAddr( posiTxs[i], i );
+          
+            txMoviendo     = posiTxs[i].idTx;
+
+            ///////////////////////////////////////////////////////////////////////
+            //posiTxs
+            ///////////////////////////////////////////////////////////////////////
+            //Reposicionamos x, y, centro del Tx
+            posiTxs[i].x         += int( mouseX - mouseXIni );
+            posiTxs[i].y         += int( mouseY - mouseYIni );
+
+            xCentroMoviendo      = int( posiTxs[i].x + (anchoTx / 2) );
+            yCentroMoviendo      = int( posiTxs[i].y + (altoTx  / 2) );
+
+            posiTxs[i].xCentro   = xCentroMoviendo;
+            posiTxs[i].yCentro   = yCentroMoviendo;
+            
+
+            ///////////////////////////////////////////////////////////////////////
+            //posiAddrs
+            ///////////////////////////////////////////////////////////////////////    
+            //Recolocamos x1, y1, x2, y2 de posiAddrs
+            for(let i=0; i<posiAddrs.length; i++) {
+
+                //En idTx2 están los satélites
+                if(posiAddrs[i].idTx2 == txMoviendo ){
+
+                    //Si es una entrada
+                    if(posiAddrs[i].io == 'I'){
+                        posiAddrs[i].x1             = xCentroMoviendo;
+                        posiAddrs[i].y1             = yCentroMoviendo;
+                    } else if(posiAddrs[i].io == 'O'){
+                        posiAddrs[i].x2             = xCentroMoviendo;
+                        posiAddrs[i].y2             = yCentroMoviendo;
+                    }//fin if(posiAddrs[j].io == 'I'
+
+                }//fin  if(posiAddrs[i].idTx1 == txEnMovimiento
+
+
+                //En idTx1 está el Centro
+                if(posiAddrs[i].idTx1 == txMoviendo ){
+
+                    //Si es una entrada
+                    if(posiAddrs[i].io == 'I'){
+                        posiAddrs[i].x2             = xCentroMoviendo;
+                        posiAddrs[i].y2             = yCentroMoviendo;
+                    } else if(posiAddrs[i].io == 'O'){
+                        posiAddrs[i].x1             = xCentroMoviendo;
+                        posiAddrs[i].y1             = yCentroMoviendo;
+                    }//fin if(posiAddrs[j].io == 'I'
+                
+                }//fin  if(posiAddrs[i].idTx1 == txEnMovimiento
+
+
+
+                //calculaAnguloDistancia(x1,y1,x2,y2, i){}
+
+
+
+            }//fin for(let i=0; i<posiAddrs.length; i++)
+
+
+        }// fin de for(let i=0; i<posiTxs.length; i++)
+          
+
+        // //recogemos la nueva posición del mouse
+        mouseXIni        = mouseX;
+        mouseYIni        = mouseY;          
+
+    }//fin recalculaTodosTxsAddrs
+
     recalculaTxAddr( txEnMovimiento, idTxEnMovimiento )     {
 
         let xCentroMoviendo, yCentroMoviendo;
@@ -749,6 +978,8 @@ class Bchain  {
             //En idTx2 están los satélites
             if(posiAddrs[i].idTx2 == txEnMovimiento ){
 
+                posiAddrs[i].movido = true;
+
                 //Si es una entrada
                 if(posiAddrs[i].io == 'I'){
                     posiAddrs[i].x1             = xCentroMoviendo;
@@ -757,10 +988,6 @@ class Bchain  {
                     posiAddrs[i].x2             = xCentroMoviendo;
                     posiAddrs[i].y2             = yCentroMoviendo;
                 }//fin if(posiAddrs[j].io == 'I'
-
-
-                //calculaAnguloDistancia(x1,y1,x2,y2, i){}
-
 
             }//fin  if(posiAddrs[i].idTx1 == txEnMovimiento
 
@@ -768,6 +995,8 @@ class Bchain  {
             //En idTx1 está el Centro
             if(posiAddrs[i].idTx1 == txEnMovimiento ){
 
+                posiAddrs[i].movido = true;
+
                 //Si es una entrada
                 if(posiAddrs[i].io == 'I'){
                     posiAddrs[i].x2             = xCentroMoviendo;
@@ -777,11 +1006,30 @@ class Bchain  {
                     posiAddrs[i].y1             = yCentroMoviendo;
                 }//fin if(posiAddrs[j].io == 'I'
 
-
-                //calculaAnguloDistancia(x1,y1,x2,y2, i){}
-
-            
             }//fin  if(posiAddrs[i].idTx1 == txEnMovimiento
+
+
+//calculaAnguloDistancia(x1,y1,x2,y2, i){}
+//calculaAnguloDistancia(x1,y1,x2,y2, i){}
+            //Calculamos angulo y distancia con x1, y1, x2, y2  
+            //Grabamos en posiAddrs[i].angulo y posiAddrs[i].distancia
+            // if( posiAddrs[i].io == 'I' ){
+
+            //     this.calculaAnguloDistancia( posiAddrs[i].x2, posiAddrs[i].y2,
+            //                                  posiAddrs[i].x1, posiAddrs[i].y1 ,
+            //                                  i );   
+
+
+            // }else if( posiAddrs[i].io == 'O' ){
+            
+                //Pasar parámetros en el orden x1, y1, x2, y2
+            this.calculaAnguloDistancia( 
+                                         posiAddrs[i].x1 , posiAddrs[i].y1, 
+                                         posiAddrs[i].x2 , posiAddrs[i].y2 ,
+                                         i );  
+
+
+            // }//fin if(posiAddrs[i].io == 'I'            
 
         }//fin for(let i=0; i<posiAddrs.length; i++)
 
@@ -793,7 +1041,6 @@ class Bchain  {
 
     }//fin recalculaTxAddr
     
-
     recalculaTxsSeleccionados( txsSeleccionados )           {
 
         let txParaMover, idTxParaMover;
@@ -805,11 +1052,6 @@ class Bchain  {
             txParaMover     = txsSeleccionados[i];
             idTxParaMover   = posiTxs.findIndex(posiTxs => posiTxs.idTx === txParaMover);
 
-            //Volver a ver 
-            // txParaMover     = posiTxs.find     (posiTxs => posiTxs.idTx === txsSeleccionados[i]);
-            // idTxParaMover   = posiTxs.findIndex(posiTxs => posiTxs.idTx === txsSeleccionados[i]);
-            // myBchain.recalculaTxAddr( txParaMover, idTxParaMover );
-
 
             ///////////////////////////////////////////////////////////////////////
             //posiTxs
@@ -818,11 +1060,11 @@ class Bchain  {
             posiTxs[idTxParaMover].x         += int( mouseX - mouseXIni );
             posiTxs[idTxParaMover].y         += int( mouseY - mouseYIni );
 
-            xCentroMoviendo                     = int( posiTxs[idTxParaMover].x + (anchoTx / 2) );
-            yCentroMoviendo                     = int( posiTxs[idTxParaMover].y + (altoTx  / 2) );
+            xCentroMoviendo                   = int( posiTxs[idTxParaMover].x + (anchoTx / 2) );
+            yCentroMoviendo                   = int( posiTxs[idTxParaMover].y + (altoTx  / 2) );
 
-            posiTxs[idTxParaMover].xCentro   = xCentroMoviendo;
-            posiTxs[idTxParaMover].yCentro   = yCentroMoviendo;
+            posiTxs[idTxParaMover].xCentro    = xCentroMoviendo;
+            posiTxs[idTxParaMover].yCentro    = yCentroMoviendo;
             
 
             ///////////////////////////////////////////////////////////////////////
@@ -865,13 +1107,10 @@ class Bchain  {
 
                     //calculaAnguloDistancia(x1,y1,x2,y2, i){}
 
-
                 
                 }//fin  if(posiAddrs[i].idTx1 == txEnMovimiento
 
             }//fin for(let i=0; i<posiAddrs.length; i++)
-
-
 
 
         }// fin de for for(let i=0; i<txsSeleccionados.length;
@@ -881,16 +1120,89 @@ class Bchain  {
         mouseXIni        = mouseX;
         mouseYIni        = mouseY;  
 
-        //myBchain.dibujaTxsAddrs();
-
 
     }//fin recalculaTxsSeleccionados( txsSeleccionados )
 
-    recalculaAnguloDistancia()                              {
-        console.log('recorrer arbol y recalcular angulo y distancia');
+    calculaXYDesdeAnguloDistancia (angulo, distancia, i, io ){
+
+        let xPlaneta, yPlaneta , xSatelite, ySatelite;
+
+        if(io=='I'){
+            xPlaneta        = posiAddrs[i].x2;
+            yPlaneta        = posiAddrs[i].y2;
+
+            xSatelite       = int(xPlaneta - posiAddrs[i].distancia * cos(posiAddrs[i].angulo));
+            ySatelite       = int(yPlaneta - posiAddrs[i].distancia * sin(posiAddrs[i].angulo));
+
+            //Si no coincide calculado con valor grabado, dejamos el grabado
+            if (posiAddrs[i].x1 != xSatelite)  xSatelite = posiAddrs[i].x1;
+            if (posiAddrs[i].y1 != ySatelite)  ySatelite = posiAddrs[i].y1;
             
-    }//fin recalculaAnguloDistancia
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            posiAddrs[i].x1 = xSatelite
+            posiAddrs[i].y1 = ySatelite
+
+        }//fin if(io=='I')
+
+        if(io=='O'){
+            xPlaneta        = posiAddrs[i].x1;
+            yPlaneta        = posiAddrs[i].y1;
+
+            xSatelite       = int(xPlaneta + posiAddrs[i].distancia * cos(posiAddrs[i].angulo));
+            ySatelite       = int(yPlaneta + posiAddrs[i].distancia * sin(posiAddrs[i].angulo));
+
+            //Si no coincide calculado con valor grabado, dejamos el grabado
+            if (posiAddrs[i].x2 != xSatelite)  xSatelite = posiAddrs[i].x2;
+            if (posiAddrs[i].y2 != ySatelite)  ySatelite = posiAddrs[i].y2;
+
+            posiAddrs[i].x2 = xSatelite
+            posiAddrs[i].y2 = ySatelite
+        }//fin if(io=='O')
+
+
+    }//fin calculaXYDesdeAnguloDistancia
+
+    calculaAnguloDistancia(x1, y1, x2, y2, i  )             {
+
+        //MODIFICADO para que trate igual I que O
+
+        let distancia, angulo, io, idAddr, indexArbolTxsAddrs;
+
+        io                      = posiAddrs[i].io;
+        idAddr                  = posiAddrs[i].idAddr;
+
+
+        distancia               = int( Math.sqrt( (x1 - x2)**2 + (y1 - y2)**2 ) );
+        posiAddrs[i].distancia  = distancia;
+
+        if(io=='I'){
+            angulo              = int( acos( (x2 - x1) / distancia  ) ); 
+
+        }else if(io=='O'){
+            angulo              = int( acos( (x1 - x2) / distancia  ) );
+
+        }
+
+        if(io=='O'){
+            angulo = 360 - angulo;
+        }//fin if(io=='O')
+
+        posiAddrs[i].angulo         = angulo; 
+
+//console.log(i , angulo , x1 - x2 );
+
+        //Actualiza angulo y distancia en arbolTxsAddrs
+        //OJO , las addr entre dos TX guarda el angulo de la última addr en posiAddrs
+        for(let i=0; i<arbolTxsAddrs.length; i++) {
+            if(arbolTxsAddrs[i].rama[1] == idAddr){
+                arbolTxsAddrs[i].angulo    = angulo;
+                arbolTxsAddrs[i].distancia = distancia;
+                //break;
+            }//fin if(arbolTxsAddrs[i].rama[1] == idAddr)
+        }//fin for(let i=0; i<arbolTxsAddrs.le
+        
+        
+            
+    }//fin calculaAnguloDistancia
 
     contenidoAyuda(ancho , alto)                            {
         
@@ -1503,34 +1815,32 @@ class Bchain  {
     }//fin muestraOcultaInfo
 
     desactivaDraw()                                         {
-        //Detenemos el movimiento de TX o TXs y el zoom
+        estadoMoviendoTx      = false;  
 
-        moviendoTx          = false;  
-
-        //Ocultamos ventana de ayuda
-        //myVentana.oculta();    //Con oculta desaparece el texto de ayuda
-        //ayudaVentana.oculta();
         myBchain.mueveFueraColorTag();
 
     }//fin desactivaDraw()
 
     rayado()                                                {
 
-        push();
-
-            
-        fill(77, 77, 77);
-        stroke(100);
-
-        textSize(16);
         let paso = 50;
         let anchoTxt;
 
+        push();
+
+        fill(77, 77, 77);
+        stroke(100);
+        strokeWeight(0.3);
+
+        textSize(12);
+
+        //Vertical
         for(let i=0; i<windowWidth ; i= i + paso) {
             anchoTxt = textWidth(i) / 2;
-            if (i>0) text(i, i-anchoTxt, 20);
+            if (i>0) text(i, i-anchoTxt, 14);
             line(i, 25 , i, windowHeight);
         }//fin for(let i=0; i<windowWidth ; i= i + paso)
+        //Horizontal
         for(let i=0; i<windowHeight ; i=i + paso) {
             if (i>0) text(i, 2, i+5);    
             line(33, i, windowWidth , i);
@@ -1781,7 +2091,7 @@ class Bchain  {
 
     }//fin centrarTxsAddrs
 
-    muestraVentanaTx (miTx, i)                              {
+    muestraVentanaInfoTx (miTx, i)                          {
 
         let anchoLiterales;
         let numeroLineas  ;
@@ -1793,6 +2103,8 @@ class Bchain  {
         let altoCanvas    ;
         let sobrepasaAncho;
         let sobrepasaAlto ;
+        let tipoTx;
+        let numMaxLineas;
 
    
         //Ocultamos ventana de ayuda
@@ -1804,21 +2116,46 @@ class Bchain  {
         anchoLiterales  = 70;
         numeroLineas    = 1;
         paso            = 20;
-        posiY           = paso + 5;        
+        posiY           = paso + 5;    
 
-        //Calculamos el número líneas para mostrar en ventana
-        if( posiTxs[i].blockHeight  > 0 ) numeroLineas++;
-        if( posiTxs[i].value        > 0 ) numeroLineas++;
-        if( posiTxs[i].numVin       > 0 ) numeroLineas++;
-        if( posiTxs[i].numVout      > 0 ) numeroLineas++;
-        if( posiTxs[i].blockTime    > 0 ) numeroLineas++;
-        if( posiTxs[i].fees         > 0 ) numeroLineas++;
+        numMaxLineas    = 10;
+        
+        //Es una tx normal o una Multi Txs: NN - 
+        tipoTx          = 'normal';
+        if( miTx.substring(0,5) == 'Multi'){
+            tipoTx = 'multiTx';
+        }//fin if( miTx.substring(0,5) == 'Multi'
+
+
+        if (tipoTx == 'normal'){
+            //Calculamos el número líneas para mostrar en ventana
+            if( posiTxs[i].blockHeight  > 0 ) numeroLineas++;
+            if( posiTxs[i].value        > 0 ) numeroLineas++;
+            if( posiTxs[i].numVin       > 0 ) numeroLineas++;
+            if( posiTxs[i].numVout      > 0 ) numeroLineas++;
+            if( posiTxs[i].blockTime    > 0 ) numeroLineas++;
+            if( posiTxs[i].fees         > 0 ) numeroLineas++;
+
+            anchoVentana        = anchoLiterales + textWidth( miTx )+ (2 * paso)  ;
+
+        }else if (tipoTx == 'multiTx'){
+            anchoLiterales = 10;
+            //Calcular  num líneas en función de nº txs
+            if(posiTxs[i].multiTxs.length + 1 > numMaxLineas ){
+                numeroLineas = numMaxLineas + 3;
+            }else{
+                numeroLineas = posiTxs[i].multiTxs.length + 1;
+            }//fin  if(posiTxs[i].multiTxs.length + 1 > numMaxLine
+
+            anchoVentana        = anchoLiterales + textWidth( posiTxs[i].multiTxs[0] )+ (2 * paso)  ;
+
+        }//fin if (tipoTx == 'normal')
 
         //Si solo hay una línea no mostramos ventana
         //////if( numeroLineas == 1 )return;
 
       
-        anchoVentana        = anchoLiterales + textWidth( miTx )+ (2 * paso)  ;
+        
         altoVentana         = posiY + (paso * numeroLineas);
         
         anchoCanvas         = windowWidth   - margenCanvas.der;
@@ -1841,11 +2178,11 @@ class Bchain  {
         myVentana.ancho     = anchoVentana;
         myVentana.alto      = altoVentana;
       
-        myVentana.margen = {'arriba' : 10 , 'abajo' : 10 , 'izq' : 10 , 'dere' : 10 };
+        myVentana.margen = {'arriba' : 10 , 'abajo' : 7 , 'izq' : 7 , 'dere' : 7 };
         myVentana.transparenciaVentana  = 240;
         myVentana.tranparenciaMargen    = 120;
         myVentana.redondeo = 3;
-        myVentana.sombra = true;
+        myVentana.sombra = false;
 
 
         myVentana.update();
@@ -1856,64 +2193,86 @@ class Bchain  {
       
         if((posiTxs[i].idTx).substring(0,5) == 'Multi'){
             text ('      ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
-            anchoLiterales -= 70;
+            //anchoLiterales -= 70;
         }else{
             text ('TXID: ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
         }//fin 
         text (posiTxs[i].idTx ,                 myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );
         posiY = posiY + paso;
 
-        if( posiTxs[i].blockHeight   > 0 ){
-            text ('BLOCK: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
-            text ((posiTxs[i].blockHeight).toLocaleString("es-ES") , 
-                                                myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
-            posiY = posiY + paso;
 
-        }//fin if( posiTxs[i].blockHeight   > 0
+        if (tipoTx == 'normal'){
 
-        if( posiTxs[i].value   > 0 ){
-            text ('VALOR: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
-            text (int(posiTxs[i].value).toLocaleString("es-ES") , 
-                                                myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
-            posiY = posiY + paso;
+            if( posiTxs[i].blockHeight   > 0 ){
+                text ('BLOCK: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
+                text ((posiTxs[i].blockHeight).toLocaleString("es-ES") , 
+                                                    myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
+                posiY = posiY + paso;
 
-        }//fin if( posiTxs[i].value   > 0  
+            }//fin if( posiTxs[i].blockHeight   > 0
 
-        if( posiTxs[i].blockTime  > 0 ){
-            text ('TIME: ' ,                    myVentana.x + paso,                    myVentana.y + posiY );
-            text (myTime(posiTxs[i].blockTime), myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
-            posiY = posiY + paso;
+            if( posiTxs[i].value   > 0 ){
+                text ('VALOR: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
+                text (int(posiTxs[i].value).toLocaleString("es-ES") , 
+                                                    myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
+                posiY = posiY + paso;
 
-        }//fin if( posiTxs[i].blockTime   > 0  
+            }//fin if( posiTxs[i].value   > 0  
 
-        if( posiTxs[i].fees  > 0 ){
-            text ('FEES: ' ,                 myVentana.x + paso,                    myVentana.y + posiY );
-            text ((posiTxs[i].fees).toLocaleString("es-ES") , 
-                                             myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
-            posiY = posiY + paso;
+            if( posiTxs[i].blockTime  > 0 ){
+                text ('TIME: ' ,                    myVentana.x + paso,                    myVentana.y + posiY );
+                text (myTime(posiTxs[i].blockTime), myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                posiY = posiY + paso;
 
-        }//fin if( posiTxs[i].fees   > 0  
+            }//fin if( posiTxs[i].blockTime   > 0  
 
-        if( posiTxs[i].numVin  > 0 ){
-            text ('#INPUTS: ' ,                  myVentana.x + paso,                    myVentana.y + posiY );
-            text (posiTxs[i].numVin ,            myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
-            posiY = posiY + paso;
+            if( posiTxs[i].fees  > 0 ){
+                text ('FEES: ' ,                 myVentana.x + paso,                    myVentana.y + posiY );
+                text ((posiTxs[i].fees).toLocaleString("es-ES") , 
+                                                 myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                posiY = posiY + paso;
 
-        }//fin if( posiTxs[i].numVin   > 0   
+            }//fin if( posiTxs[i].fees   > 0  
 
-        if( posiTxs[i].numVout  > 0 ){
-            text ('#OUTPUTS: ' ,                 myVentana.x + paso,                    myVentana.y + posiY );
-            text (posiTxs[i].numVout ,           myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
-            posiY = posiY + paso;
+            if( posiTxs[i].numVin  > 0 ){
+                text ('#INPUTS: ' ,                  myVentana.x + paso,                    myVentana.y + posiY );
+                text (posiTxs[i].numVin ,            myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                posiY = posiY + paso;
 
-        }//ffin if( posiTxs[i].numVout   > 0  
+            }//fin if( posiTxs[i].numVin   > 0   
+
+            if( posiTxs[i].numVout  > 0 ){
+                text ('#OUTPUTS: ' ,                 myVentana.x + paso,                    myVentana.y + posiY );
+                text (posiTxs[i].numVout ,           myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                posiY = posiY + paso;
+
+            }//ffin if( posiTxs[i].numVout   > 0  
+
+        }else if (tipoTx == 'multiTx'){
+             //Mostrar los 10 primeros TXs del addr que lo une al padre
+             //anchoLiterales = 10;
+             for(let j=0; j<posiTxs[i].multiTxs.length; j++) {
+
+                text (posiTxs[i].multiTxs[j] ,           myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                posiY = posiY + paso;
+
+                if (j > 9){
+                    text ('.......' ,           myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+                    posiY = posiY + paso;
+                    break;
+                }//fin if (j > 9)
+               
+             }// fin de for(let j=0; j<posiTxs[i].multiTxs.length
+               
+               
+
+        }//fin if (tipoTx == 'normal')
 
  
 
-    }//fin  muestraVentanaTx    
+    }//fin  muestraVentanaInfoTx    
 
-
-    muestraVentanaAddr (miAddr, i)                          {
+    muestraVentanaInfoAddr (miAddr, i)                      {
 
         let anchoLiterales;
         let numeroLineas  ;
@@ -1965,11 +2324,11 @@ class Bchain  {
         myVentana.ancho     = anchoVentana;
         myVentana.alto      = altoVentana;
       
-        myVentana.margen = {'arriba' : 10 , 'abajo' : 10 , 'izq' : 10 , 'dere' : 10 };
+        myVentana.margen = {'arriba' : 10 , 'abajo' : 7 , 'izq' : 7 , 'dere' : 7 };
         myVentana.transparenciaVentana  = 240;
         myVentana.tranparenciaMargen    = 120;
         myVentana.redondeo = 3;
-        myVentana.sombra = true;
+        myVentana.sombra = false;
         
         myVentana.update();
         myVentana.display();
@@ -1991,7 +2350,7 @@ class Bchain  {
         }//fin if(posiAddrs[i].value) > 0        
  
       
-    }//fin  muestraVentanaAddr   
+    }//fin  muestraVentanaInfoAddr   
 
     muestraAyuda( video )                                   {
 
@@ -2270,7 +2629,7 @@ class Bchain  {
             myBchain.dibujaTxsAddrs();
             
             //Muestra ventana con INFO de Tx
-            myBchain.muestraVentanaTx (idTxOver , i);           
+            myBchain.muestraVentanaInfoTx (idTxOver , i);           
 
             encontradoTx = true;
 
@@ -2292,7 +2651,7 @@ class Bchain  {
             myBchain.dibujaTxsAddrs();
 
             //Muestra ventana con INFO de Tx
-            myBchain.muestraVentanaAddr (idAddrOver , i);
+            myBchain.muestraVentanaInfoAddr (idAddrOver , i);
 
             encontradoAddr = true;
 
@@ -2731,14 +3090,20 @@ class Bchain  {
     kk_recalculaTodosTxsAddrs()                             {
 
         let   esOk;
+            
 
         for( let i=0; i<posiTxs.length; i++) {
 
-            esOk  = txsPulsadas.find (element => element  === posiTxs[i]);
 
-            if( !esOk ) continue;
+            // console.log(posiTxs[i].idTx);
+    
+            // esOk  = txsPulsadas.find (element => element  === posiTxs[i]);
 
-            this.recalculaTxAddr( posiTxs[i], i ) ;
+            // if( !esOk ) continue;
+
+            this.recalculaTxAddr( posiTxs[i].idTx, i ) ;
+            mouseXIni        = mouseX;
+            mouseYIni        = mouseY;
 
         }//fin for( let i=0; i<posiTxs.length; i++)
 

@@ -24,6 +24,21 @@ class Conex{
     async getTxNN ( idTx ) {
 
         let datos;
+
+        //Ver si ya tenemos los datos bajados
+        for(let i=0; i<datosTxNN.length; i++) {
+
+            //Si los encontramos los devolvemos
+            if( datosTxNN[i].idTx == idTx ){
+                datos = datosTxNN[i].datos;
+                //divGifAnimado.hide();
+                return datos;
+
+            }//fin if( datosTxNN[i].idTx == idTx
+
+        }//fin for(let i=0; i<datosTxNN.length; i++)
+
+
         await fetch("https://btcbook.nownodes.io/api/v2/tx/" + idTx , this.requestOptions)
             .then(response => {
                                datos = response.json();
@@ -32,6 +47,13 @@ class Conex{
             // .catch(error => alert( error))
             .catch(error => console.log('Error: ', error));
  
+        
+        //Añadimos los datos
+        datosTxNN.push({ 
+                            'idTx'       : idTx ,  
+                            'datos'      : datos,  
+                        });
+
 
         return datos;
 

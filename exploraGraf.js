@@ -33,24 +33,27 @@ let multiTxs        = [{
                       }];                      
 
 let posiTxs         = [{    
-                         'idTx'       : 0 ,        
-                         'x'          : -2000,     
-                         'y'          : -2000, 
-                         'xCentro'    : -2100,     
-                         'yCentro'    : -2050, 
-                         'weight'     : 2,
-                         'io'         : ''  ,         
-                         'tagTx'      : "",     
-                         'estado'     : 'inicial',
-                         'color'      : {'r':77, 'g':77, 'b':77},
-                         'bgColor'    : {'r':127, 'g':127, 'b':127},
-                         'movido'     : false,
-                         'blockHeight': 0,
-                         'value'      : 0,
-                         'numVin'     : 0,
-                         'numVout'    : 0,
-                         'blockTime'  : 0,
-                         'fees'       : 0,
+                         'idTx'         : 0 ,        
+                         'x'            : -2000,     
+                         'y'            : -2000, 
+                         'xCentro'      : -2100,     
+                         'yCentro'      : -2050, 
+                         'weight'       : 2,
+                         'io'           : ''  ,         
+                         'tagTx'        : "",     
+                         'estado'       : 'inicial',
+                         'color'        : {'r':77, 'g':77, 'b':77},
+                         'bgColor'      : {'r':127, 'g':127, 'b':127},
+                         'movido'       : false,
+                         'blockHeight'  : 0,
+                         'value'        : 0,
+                         'numVin'       : 0,
+                         'numVout'      : 0,
+                         'blockTime'    : 0,
+                         'fees'         : 0,
+                         'multiTxs'     : [],
+                         'version'      : 0,
+                         'lockTime'     : 0,
                       }];    
 
 let posiAddrs       = [{
@@ -88,7 +91,17 @@ let txsCirculoRojo  = [{
                       }];
 
 let txsPulsadas     = []; 
-let txsSeleccionados;                   
+let txsSeleccionados;  
+
+let datosTxNN       =[{
+                        'idTx'       : 0 ,  
+                        'datos'      : {},      
+                     }];
+
+let datosAddrNN     =[{
+                        'idAddr'     : 0 ,  
+                        'datos'      : {},      
+                     }];
 
 //Instancias de clases
 //////////////////////////////////////////////////////////////////////
@@ -107,12 +120,11 @@ let indexArbolMulti ;
 let radioSatelites    = 150;
 let anchoTx           = 200;
 let altoTx            = 100;
-// let relAspectoTx      = anchoTx / altoTx;
-let numLineasTx       = 5;
+let numLineasTx       = 6;
 let margenIzqTx       = 20;
 
 //Variables semaforo
-let moviendoTx;
+let estadoMoviendoTx;
 let mostrandoAyuda;
 let muestraOpciones;
 let mostrarRayado;
@@ -120,11 +132,10 @@ let mostrarSombra;
 let mostarEliminar;
 let mostarLineas;
 let mostarInfo;
-//let semaforos = {};
-let aplicaZoom;
+let mostarInfoAnterior;
+let estadoAplicaZoom;
 
 //Semaforo de imprimir, solo true cuando cambia algo en el canvas NO UTILIZADO
-//let imprimeUnaVez     = true;
 let muestraPie;
 let muestraVideo;
 
@@ -144,7 +155,6 @@ let textoEspaciado;
 let inputTx, botonBuscar, nombreApp, literalPie;
 let canvasInputTx, canvasTrab;
 let divAyuda;
-//let divAyudaVideo;
 let divOpciones;
 let divGifAnimado;
 let ventanaPie;
@@ -185,8 +195,16 @@ let anchoRectColor    = 35;
 //Eliminar
 let marcaParaEliminar;
 
+//Se ha pinchado fuera de txs
+let mousedownFueraTx;
+
 //Area de trabajo
 let estadoAreaSelec;
+//Para mover todos txs pinchando y arrastrando fuera de un tx
+let estadoMousedownFueraTx;
+
+//Estado de ir por datos a NowNodes
+let estadoDatosTxAddrNN;
 
 
 
@@ -195,7 +213,8 @@ let estadoAreaSelec;
 let idTx ;
 idTx                = "1d053e14643494a05e9a4279c42ec9f8924d52100e2e229c5e0174742d50e912";
 //idTx                ='7e6070be5b6b7ac8ae300d9604cda631064f2d3125e2eeb7ba89718c38334506';
- 
+//idTx = "993ced02486f9aaa5a5ed943141e05e436aac054dcea78a560f0f1860c80415a"
+//idTx = "065cca82c46242a0c197ef1cfd3e811dd7760c68fd5929c9ee66dae01db0e00e"
 
 let imagenBg;
 
@@ -217,10 +236,10 @@ let stateIndex = 0;
 let state = [];
 
 
+
 function preload()                                    {
   imagenBg = loadImage('https://b2p5.github.io/excabit/media/fondoPantalla.jpg');
 }//fin function preload
-
 
 function setup()                                      {
 
@@ -256,13 +275,8 @@ function setup()                                      {
   literalPie.addClass("literalPie");
 
   
-  //Inicializamos botones Ayuda y Opciones de Cabecera
-  ///myBchain.contenidoAyuda(0 , 0);
-
   myVentana.oculta();
   ayudaVentana.oculta();
-
-  ////////////document.getElementById("div_ayuda").style.visibility = 'visible';
 
   //Botones de pie de página
   botonRayado       = createButton('cuadrícula');
@@ -359,44 +373,51 @@ function setup()                                      {
 
 
   //Inicializamos Arrays
-  arbolTxsAddrs     = Array();
-  posiTxs           = Array();
-  posiAddrs         = Array();
-  multiTxs          = Array();
+  arbolTxsAddrs           = Array();
+  posiTxs                 = Array();
+  posiAddrs               = Array();
+  multiTxs                = Array();
 
-  indexArbolTxs     = Array();
-  indexArbolAddrs   = Array();
-  indexArbolMulti   = Array();
+  indexArbolTxs           = Array();
+  indexArbolAddrs         = Array();
+  indexArbolMulti         = Array();
 
-  txsSeleccionados  = Array();
-  txsPulsadas       = Array();
+  txsSeleccionados        = Array();
+  txsPulsadas             = Array();
 
-  //Semáforos
-  moviendoTx        = false;
-  mostrandoAyuda    = false;
-  muestraOpciones   = false;
-  mostrarRayado     = true;
-  mostrarSombra     = false;
-  marcaParaEliminar = false;
-  mostarEliminar    = false;
-  mostarLineas      = true;
-  mostarInfo        = true;  
-  muestraPie        = true;
-  muestraVideo      = true;
+  //Semáforos     
+  estadoMoviendoTx        = false;
+  mostrandoAyuda          = false;
+  muestraOpciones         = false;
+  mostrarRayado           = true;
+  mostrarSombra           = false;
+  marcaParaEliminar       = false;
+  mostarEliminar          = false;
+  mostarLineas            = true;
 
-  estadoInfoTxAddr  = true;  //De momento parado, no funciona bien
-  ratonSobreElemento= 0;
-  elementoAnterior  = 0;
+  mostarInfo              = true;  
+  mostarInfoAnterior      = mostarInfo;
+  muestraPie              = true;
+  muestraVideo            = true;
+
+  estadoInfoTxAddr        = true;  //De momento parado, no funciona bien
+  ratonSobreElemento      = 0;
+  elementoAnterior        = 0;
 
   //Select Tx dentro de un área
-  estadoAreaSelec   = 0;
+  estadoAreaSelec         = 0;
+  estadoMousedownFueraTx  = 0;
+
+  //Recoger datos
+  estadoDatosTxAddrNN     = false;
+  datosTxNN               = Array();
 
 
   //Arrancamos instancia de captura de vídeo
   P5Capture.getInstance();
 
-  sitioVideosAyuda = 'https://b2p5.github.io/excabit/media/videosAyuda/';
-  yPantallaVideo   = 140;
+  sitioVideosAyuda        = 'https://b2p5.github.io/excabit/media/videosAyuda/';
+  yPantallaVideo          = 140;
 
   //Arranca Estado -- Ctrl + Z
   saveState();
@@ -405,14 +426,48 @@ function setup()                                      {
 
 }//fin function setup
 
-
 async function draw()                                 {
   
+  //Si hay Txs o Addrs nuevas ir a recoger datos
+  if(estadoDatosTxAddrNN){
+    myBchain.getDatosTxAddrNN();
+    estadoDatosTxAddrNN = false;
+    
+
+  }//fin if(estadoDatosTxAddrNN)
+  
+  //Si mouseDown fuera de tx ->  mover todolos txs y addrs
+  if (estadoMousedownFueraTx){
+
+    //Arranca la recta de movimiento
+    if(estadoMousedownFueraTx == 1){
+
+      myBchain.recalculaTodosTxsAddrs();
+
+      myBchain.dibujaTxsAddrs();
+
+    }//fin if(estadoMousedownFueraTx == 1
+
+    //Finaliza la recta de movimiento
+    if(estadoMousedownFueraTx == 2){
+
+      //Estado cuando termina el movimiento mouseup
+      //Este estado no es necesario -> pasar con mouseup de estado 1  a estado 0
+      myBchain.dibujaTxsAddrs();
+
+      estadoMousedownFueraTx = 0;
+
+    }//fin if(estadoMousedownFueraTx == 2    
+
+  }//fin  if (estadoMousedownFueraTx
+
   //Seleccionar área
   if( estadoAreaSelec ){
     
     //Arranca el área
     if(estadoAreaSelec == 1 ){
+
+      
 
       //Quitar Info, con Info no funciona
       if(mostarInfo){
@@ -425,6 +480,7 @@ async function draw()                                 {
 
       myBchain.dibujaTxsAddrs();
 
+      //Dibuja rectángulo gray transparente con el área selsccionada
       push();
       fill(200,200,200,100);
       stroke('gray');
@@ -445,12 +501,15 @@ async function draw()                                 {
       estadoAreaSelec = 0;
 
       //Mostramos info
-      mostarInfo = true;
-      botonInfo.html('con info.');
+      if(mostarInfoAnterior){
+        mostarInfo = true;
+        botonInfo.html('con info.');
+      }else{
+        mostarInfo = false;
+        botonInfo.html('sin info.');        
+      }
           
     }//fin  if(estadoAreaSelec == 2  
-
-
 
 
   }//fin if(estadoAreaSelec > 0
@@ -476,7 +535,7 @@ async function draw()                                 {
   }//fin estadoInfoTxAddr
 
   //Hacemos zoom del canvas
-  if (aplicaZoom) {
+  if (estadoAplicaZoom) {
 
     //Redimensiona alto, ancho y radio al centro de las cajas de Tx y radio círculo rojo
     radioCirculoRojo  *= sf;
@@ -514,23 +573,21 @@ async function draw()                                 {
     ayudaVentana.oculta();
     mostrandoAyuda      = false;
 
-
     myBchain.dibujaTxsAddrs();
 
-    aplicaZoom = false;
+    estadoAplicaZoom = false;
     
-  }//fin if (aplicaZoom)
-
+  }//fin if (estadoAplicaZoom)
   
   //Movimiento de una Tx o Txs seleccionados
-  if (moviendoTx){
+  if (estadoMoviendoTx){
     
 
     //Ocultamos ventana de ayuda
     ayudaVentana.oculta();
     mostrandoAyuda      = false;
 
-    
+    //Si tenemos varios Tx seleccionados
     if( txsSeleccionados.length > 0 ){ 
 
       //Si hay varios Txs seleccionados
@@ -551,7 +608,7 @@ async function draw()                                 {
     }//fin if( txsSeleccionados.length > 0
 
 
-  }//fin if (moviendoTx)
+  }//fin if (estadoMoviendoTx)
 
 
 }//fin async function draw()  
@@ -583,17 +640,20 @@ window.addEventListener("dblclick", async function(e) {
         //Ocultamos ventana de ayuda
         mostrandoAyuda      = false;
 
-        //Cambiamos color Tx pinchada
+        //Cambiamos color Tx pinchada, color naranja
         posiTxs[i].bgColor = {'r':232, 'g':132, 'b':32};
 
 
-        await myBchain.getDatos    ( idTxADesplegar, i );
-              myBchain.putTxsAddrs ( idTxADesplegar );
+        await myBchain.getDatos      ( idTxADesplegar, i );
+              myBchain.putTxsAddrs   ( idTxADesplegar    );
               myBchain.dibujaTxsAddrs();
 
-              divGifAnimado.hide();
+        divGifAnimado.hide();
 
-        if ( !txsPulsadas.includes(idTxADesplegar) ) txsPulsadas.push(idTxADesplegar);     
+        //Añadir a txsPulsadas
+        if ( !txsPulsadas.includes(idTxADesplegar) ) txsPulsadas.push(idTxADesplegar);  
+
+//console.log(arbolTxsAddrs);
 
       }//fin if(!esUnMultiTx)
       
@@ -611,18 +671,22 @@ window.addEventListener("mousedown",      function(e) {
     //Si estamos en primera pantalla de petición de Tx no atendemos mouse
     if (nombrePantalla == 'primera') return;
 
+    mousedownFueraTx = true;
+
     for(let i=0; i<posiTxs.length; i++) {
 
       txEnMovimiento = myBchain.estaDentroTx (  posiTxs[i] );
           
       if ( txEnMovimiento ){
 
-        //Semaforos
-        moviendoTx          = true;
-
+        //Semaforos para arrancar function draw()   
+        estadoMoviendoTx    = true;
 
         //Indice de la Tx en movimiento
         idTxEnMovimiento = i;
+
+        //No se ha pinchado ningún Tx
+        mousedownFueraTx    = false;        
         
         //recogemos la posición inicial del mouse
         mouseXIni   = mouseX;
@@ -636,10 +700,22 @@ window.addEventListener("mousedown",      function(e) {
 
       }//fin if ( txEnMovimiento )
 
-    }// fin de for(let i=0; i<allTx.length; i++
+
+    }// fin de for(let i=0; i<posiTxs.length; i++)
+
+    //Si el ratón se ha pulsado fuera de Tx sin nungun tecla adicional, (solo raton)  -> Mover todos txs 
+    if( mousedownFueraTx  &&  ( keyIsPressed == false)){
+      //Mover todos txs arrastrando ratón
+
+      mouseXIni   = mouseX;
+      mouseYIni   = mouseY;
+      
+      estadoMousedownFueraTx = 1;
+
+    }//fin if(mousedownFueraTx)
 
     
-});  //fin window.addEventListener("mousedown",        ===>  Mueve un Tx o Txs seleccionados
+});  //fin window.addEventListener("mousedown",        ===>  Mueve un Tx o Txs seleccionados o todas Txs
 
 window.addEventListener("click",          function(e) {
 
@@ -712,7 +788,7 @@ window.addEventListener("click",          function(e) {
 
 
         //Muestra ventana con info de Tx
-        myBchain.muestraVentanaTx (idTxOver , i);
+        myBchain.muestraVentanaInfoTx (idTxOver , i);
 
         return;
 
@@ -731,7 +807,7 @@ window.addEventListener("click",          function(e) {
       if ( idAddrOver ){
 
         //Muestra ventana con info de Tx
-        myBchain.muestraVentanaAddr (idAddrOver , i);
+        myBchain.muestraVentanaInfoAddr (idAddrOver , i);
 
         return;
 
@@ -747,7 +823,8 @@ window.addEventListener("click",          function(e) {
 window.addEventListener("wheel",          function(e) {
 
   if (mostrandoAyuda) return;
-  aplicaZoom        = true;
+
+  estadoAplicaZoom        = true;
 
   myBchain.mueveFueraColorTag();
     
@@ -756,7 +833,7 @@ window.addEventListener("wheel",          function(e) {
   }else if (e.deltaY < 0){
     sf = 0.97;
   }if (e.deltaY == 0){
-    aplicaZoom        = false;
+    estadoAplicaZoom        = false;
   }//fin if (e.deltaY > 0)
 
 });// fin window.addEventListener("wheel",             ===> wheel ZOOM
@@ -766,9 +843,6 @@ window.addEventListener("click",          function(e) {
   //ctrl + click  ===> TAG
   if (e.ctrlKey) {
     
-    // imprimeUnaVez     = true;
-    // marcaParaEliminar = false;
-
     myBchain.mueveFueraColorTag();
 
     for(let i=0; i<posiTxs.length; i++) {
@@ -800,10 +874,6 @@ window.addEventListener("click",          function(e) {
   
   //alt + click   ===> COLOR
   if (e.altKey) {
-
-    // imprimeUnaVez     = true;
-    // marcaParaEliminar = false;
-    
 
     myBchain.mueveFueraColorTag();
 
@@ -855,8 +925,6 @@ window.addEventListener("click",          function(e) {
   //Elimina Txs y Addrs definitivamente
   if(marcaParaEliminar)                               { 
 
-    // imprimeUnaVez = true;
-
     myBchain.eliminaTxAddr();
 
         
@@ -884,7 +952,6 @@ window.addEventListener("click",          function(e) {
     muestraPie        = true;
     myBchain.dibujaTxsAddrs();
 
-    // imprimeUnaVez = false;
 
   }//fin if ((e.key == 'p')|| (e.key == 'P'))
     
@@ -892,14 +959,20 @@ window.addEventListener("click",          function(e) {
 
 window.addEventListener("mousedown",      function(e) {
 
-  if ( ( keyIsPressed == true) && 
-    ( key === 'z' || key === 'Z' )
-  ){   
+  if (( (( keyIsPressed == true) && 
+          ( key === 'z' || key === 'Z' )) || 
+        (e.shiftKey) 
+         
+     )){   
 
     
     if(estadoAreaSelec == 0 ){
+      //Recogemos estado de Info
+      mostarInfoAnterior = mostarInfo;
+      //Recogemos posicion mouse
       mouseXIni   = mouseX;
       mouseYIni   = mouseY;
+      //Cambiamos de estado
       estadoAreaSelec = 1;
 
     }//fin if(estadoAreaSelec == 0
@@ -943,15 +1016,21 @@ window.addEventListener("mouseup",        function(e) {
 
   //Levanta click en seleccionar Area
   if(estadoAreaSelec == 1 ){
-    mouseXFin   = mouseX;
-    mouseYFin   = mouseY;
+    mouseXFin       = mouseX;
+    mouseYFin       = mouseY;
     estadoAreaSelec = 2;
 
   }// fin if(estadoAreaSelec == 1
 
+  //Mover todos txs arrastrando ratón
+  if(estadoMousedownFueraTx == 1){
+
+    estadoMousedownFueraTx  = 2; //no hace falta, pasar a estado 0
+
+  }//fin if(estadoMousedownFueraTx == 1
+
 
 });  //fin window.addEventListener("mouseup",          ===> Deshacer click , dblclick, mousedown etc
-
 
 
 
@@ -966,11 +1045,20 @@ function mouseReleased()                              {
 
   //Levanta click en seleccionar Area
   if(estadoAreaSelec == 1 ){
-    mouseXFin   = mouseX;
-    mouseYFin   = mouseY;
+    // mouseXFin       = mouseX;
+    // mouseYFin       = mouseY;
     estadoAreaSelec = 2;
 
   }// fin if(estadoAreaSelec == 1
+
+  //Mover todos txs arrastrando ratón
+  if(estadoMousedownFueraTx == 1){
+
+    estadoMousedownFueraTx  = 2;  //no hace falta, pasar a estado 0
+
+  }//fin if(estadoMousedownFueraTx == 1
+
+
 
 }  //fin function mouseReleased()                      ===> Deshacer click , dblclick, mousedown etc
 
@@ -987,7 +1075,6 @@ function windowResized()                              {
   myBchain.dibujaTxsAddrs();
 
 }//fin function windowResized
-
 
 function getTx()                                      {
 
@@ -1033,7 +1120,7 @@ function getTx()                                      {
 
 }//fin function getTx()
 
-function muestraAyuda(video , origen)   {
+function muestraAyuda(video , origen)                 {
 
   if (origen == 'cabecera'){
     myBchain.muestraAyuda(video);
@@ -1064,14 +1151,14 @@ function muestraAyuda(video , origen)   {
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////Tratamiento del estado -- Solo salva la imagen, no los datos
 ////////////////////////////////////////////////////////////////////////////////////////
-function keyPressed(e) {
+function keyPressed(e)                                 {
     // check if the event parameter (e) has Z (keycode 90) and ctrl or cmnd
     if (e.keyCode == 90 && (e.ctrlKey || e.metaKey)) {
       undoToPreviousState();
     }
 }
 
-function undoToPreviousState() {
+function undoToPreviousState()                         {
   if (!state || !state.length || stateIndex === 0) {
     return;
   }
@@ -1082,15 +1169,13 @@ function undoToPreviousState() {
   image(state[stateIndex], 0, 0);
 }
 
-function mousePressed() {
+function mousePressed()                                {
   saveState();
 }
 
-function saveState() {
+function saveState()                                   {
   stateIndex++;
 
   loadPixels();
   state.push(get())
 }
-
-

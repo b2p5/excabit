@@ -36,6 +36,7 @@ class Bchain  {
                         'multiTxs'      : [],
                         'version'       : 0,
                         'lockTime'      : 0,
+                        'heuristic'     : [],
                         
                     });     
                     
@@ -88,6 +89,8 @@ class Bchain  {
                 posiTxs[i].version          = resUnaTx.version;
                 posiTxs[i].lockTime         = resUnaTx.lockTime;
 
+                posiTxs[i].heuristic        = this.getHeuristic(resUnaTx.vin, resUnaTx.vout);
+
                 divGifAnimado.hide();
 
             }//fin if(!yaEstaBajado
@@ -128,8 +131,8 @@ class Bchain  {
         posiTxs[index].fees             = resUnaTx.fees;
         posiTxs[index].version          = resUnaTx.version;
         posiTxs[index].lockTime         = resUnaTx.lockTime;
-        
-     
+
+        posiTxs[index].heuristic        = this.getHeuristic(resUnaTx.vin, resUnaTx.vout);
                 
 
         //Se añaden (push) de resUnaTx en arbolTxsAddrs, posiTxs y posiAddrs siempre que no existan
@@ -178,6 +181,7 @@ class Bchain  {
                                 'multiTxs'      : [],
                                 'version'       : 0,
                                 'lockTime'      : 0,
+                                'heuristic'     : [],
                             });
                             
             }//fin if ( !this.buscaPosiTxs ( idTxTra ) 
@@ -202,6 +206,7 @@ class Bchain  {
                                 'multiTxs'      : [],
                                 'version'       : 0,
                                 'lockTime'      : 0,
+                                'heuristic'     : [],
                             });        
                         
             }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -246,8 +251,9 @@ class Bchain  {
 //console.log(resUnaAddr);
 
             //Array con los txs de una Addr 1aN
-            //(resUnaAddr.txids).slice(0, 9)
-            arrMultiTxs     = resUnaAddr.txids;
+            //Solamente los 10 primeros
+            //arrMultiTxs     = (resUnaAddr.txids).slice(0, 9);
+            arrMultiTxs     = (resUnaAddr.txids);
         
             for(let j=0; j<resUnaAddr.txids.length; j++) {
 
@@ -263,7 +269,8 @@ class Bchain  {
                     idTxsOut        = resUnaAddr.txids[j];
                     tipoTx          = '1a1';
                     if(resUnaAddr.txs > 2){    //Con mas de 2 llamamos Multi Txs
-                        numTxsMulti = int(resUnaAddr.txs)-1;
+                        //numTxsMulti = int(resUnaAddr.txs)-1;
+                        numTxsMulti = int((resUnaAddr.txids).length)-1;
                         idTxsOut    = 'Multi Txs: ' + numTxsMulti + ' - ' + resUnaAddr.totalSent;
                         tipoTx      = '1aN';
                         
@@ -314,6 +321,7 @@ class Bchain  {
                                                 'multiTxs'      : arrMultiTxs,
                                                 'version'       : 0,
                                                 'lockTime'      : 0,
+                                                'heuristic'     : [],
                                             });
 
                     }//fin if ( !this.buscaPosiTxs ( 'idTxTra'   ) 
@@ -336,6 +344,7 @@ class Bchain  {
                                                 'multiTxs'      : arrMultiTxs,
                                                 'version'       : 0,
                                                 'lockTime'      : 0,
+                                                'heuristic'     : [],
                                             });  
 
                     }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -564,28 +573,11 @@ class Bchain  {
             
             //Calculamos angulo y distancia con x1, y1, x2, y2  
             //Grabamos en posiAddrs[i].angulo y posiAddrs[i].distancia
-            // if( posiAddrs[i].io == 'I' ){
-
-            //     this.calculaAnguloDistancia( posiAddrs[i].x2, posiAddrs[i].y2,
-            //                                  posiAddrs[i].x1, posiAddrs[i].y1 ,
-            //                                  i  );   
-            //     //Para ver si funciona bien 
-            //     this.calculaXYDesdeAnguloDistancia ( posiAddrs[i].angulo, 
-            //                                          posiAddrs[i].distancia, 
-            //                                          i, 'I' ); 
-
-            // }else if( posiAddrs[i].io == 'O' ){
             
             this.calculaAnguloDistancia( 
                                          posiAddrs[i].x1 , posiAddrs[i].y1, 
                                          posiAddrs[i].x2 , posiAddrs[i].y2 ,
                                          i  );  
-                //Para ver si funciona bien 
-            //     this.calculaXYDesdeAnguloDistancia ( posiAddrs[i].angulo, 
-            //                                          posiAddrs[i].distancia, 
-            //                                          i, 'O' ); 
-
-            // }//fin if(posiAddrs[i].io == 'I' 
 
             // //Para corregir pequeños errores, recalculamos Tx y Addr de los Txs extremos del Addr
             // let txCalculada         = posiAddrs[i].idTx1;
@@ -697,6 +689,29 @@ class Bchain  {
         }//fin for(let i=0; i<posiAddrs.length; i++) ADDRs
 
 
+        //Heuristicas
+        ////////////////////////////////////////
+        for(let i=0; i<posiTxs.length; i++) {
+            
+            textoEspaciado = int(altoTx / 9);
+            noStroke();
+            let radio = 9 * 1 * sf;
+            for(let j=0; j<posiTxs[i].heuristic.length; j++) {
+
+                if(posiTxs[i].heuristic[j]){
+                    fill('red');
+                }else{
+                    fill('green');
+                }
+
+                ellipse (posiTxs[i].x - 10 ,
+                         posiTxs[i].y + (j * textoEspaciado) + 14 , 
+                         radio, radio) ;
+
+            }//fin for(let j=0; j<posiTxs[i].heuristic.length; j++
+
+        }//fin for(let i=0; i<posiTxs.length; i++) {
+
 
         //TXs
         //////////////////////////////////////////////////////////
@@ -757,9 +772,23 @@ class Bchain  {
             if((posiTxs[i].idTx).substring(0, 5) == 'Multi'){
                 idTxCorto = (posiTxs[i].idTx).substring(6);
 
+                idTxCorto = idTxCorto.replace('-', '\n sent:')
+
+                //txid
+                margenIzqTx = 15;
+                text (idTxCorto ,        
+                      posiTxs[i].x + margenIzqTx, 
+                      posiTxs[i].y +  (2 * textoEspaciado) - 0 );                
+
             }else{
 
                 idTxCorto = this.#acortaIdTx (posiTxs[i].idTx);
+
+                //txid
+                margenIzqTx = (anchoTx/2) - (textWidth(idTxCorto)/2);
+                text (idTxCorto ,        
+                        posiTxs[i].x + margenIzqTx, 
+                        posiTxs[i].y +  (1 * textoEspaciado) - 0 );                
 
                 //blockHeight
                 margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].blockHeight)/2);
@@ -787,11 +816,7 @@ class Bchain  {
                         
             }//fin if((posiTxs[i].idTx).substring(0,5) == 'Multi'
 
-            //txid
-            margenIzqTx = (anchoTx/2) - (textWidth(idTxCorto)/2);
-            text (idTxCorto ,        
-                  posiTxs[i].x + margenIzqTx, 
-                  posiTxs[i].y +  (1 * textoEspaciado) - 0 );
+
 
             //Etiqueta
             if (posiTxs[i].tagTx){
@@ -800,6 +825,9 @@ class Bchain  {
                     posiTxs[i].x + margenIzqTx, 
                     posiTxs[i].y + (6 * textoEspaciado) - 0 );
             }//fin if (posiTxs[i].tagTx)
+
+
+
 
         }// fin de for(let i=0; i<posiTx; i++  TXs
 
@@ -1560,6 +1588,22 @@ class Bchain  {
       
     }//fin  estaDentroAddr  
 
+    estaDentroHeuris(  posiTxTra )                              {
+        let okTx = 0;
+  
+        if (
+            ( mouseX > posiTxTra.x - 15 ) && (mouseX < posiTxTra.x - 1 ) && 
+            ( mouseY > posiTxTra.y) && (mouseY < posiTxTra.y + altoTx  )
+           ){
+         
+            okTx =  posiTxTra.idTx;
+           
+        }//fin de if ( ( mouseX > posiTxTra.x) && (mouseX < posiTxTra.x + anchoTx )
+      
+        return okTx;
+
+    }//fin estaDentroHeuris
+
     selectUnselectTxs()                                     {
 
         
@@ -2129,11 +2173,11 @@ class Bchain  {
 
         if (tipoTx == 'normal'){
             //Calculamos el número líneas para mostrar en ventana
-            if( posiTxs[i].blockHeight  > 0 ) numeroLineas++;
+            //if( posiTxs[i].blockHeight  > 0 ) numeroLineas++;
             if( posiTxs[i].value        > 0 ) numeroLineas++;
             if( posiTxs[i].numVin       > 0 ) numeroLineas++;
             if( posiTxs[i].numVout      > 0 ) numeroLineas++;
-            if( posiTxs[i].blockTime    > 0 ) numeroLineas++;
+            //if( posiTxs[i].blockTime    > 0 ) numeroLineas++;
             if( posiTxs[i].fees         > 0 ) numeroLineas++;
 
             anchoVentana        = anchoLiterales + textWidth( miTx )+ (2 * paso)  ;
@@ -2203,13 +2247,13 @@ class Bchain  {
 
         if (tipoTx == 'normal'){
 
-            if( posiTxs[i].blockHeight   > 0 ){
-                text ('BLOCK: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
-                text ((posiTxs[i].blockHeight).toLocaleString("es-ES") , 
-                                                    myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
-                posiY = posiY + paso;
+            // if( posiTxs[i].blockHeight   > 0 ){
+            //     text ('BLOCK: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
+            //     text ((posiTxs[i].blockHeight).toLocaleString("es-ES") , 
+            //                                         myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );            
+            //     posiY = posiY + paso;
 
-            }//fin if( posiTxs[i].blockHeight   > 0
+            // }//fin if( posiTxs[i].blockHeight   > 0
 
             if( posiTxs[i].value   > 0 ){
                 text ('VALOR: ' ,                   myVentana.x + paso,                     myVentana.y + posiY );
@@ -2219,16 +2263,16 @@ class Bchain  {
 
             }//fin if( posiTxs[i].value   > 0  
 
-            if( posiTxs[i].blockTime  > 0 ){
-                text ('TIME: ' ,                    myVentana.x + paso,                    myVentana.y + posiY );
-                text (myTime(posiTxs[i].blockTime), myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
-                posiY = posiY + paso;
+            // if( posiTxs[i].blockTime  > 0 ){
+            //     text ('TIME: ' ,                    myVentana.x + paso,                    myVentana.y + posiY );
+            //     text (myTime(posiTxs[i].blockTime), myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
+            //     posiY = posiY + paso;
 
-            }//fin if( posiTxs[i].blockTime   > 0  
+            // }//fin if( posiTxs[i].blockTime   > 0  
 
             if( posiTxs[i].fees  > 0 ){
                 text ('FEES: ' ,                 myVentana.x + paso,                    myVentana.y + posiY );
-                text ((posiTxs[i].fees).toLocaleString("es-ES") , 
+                text (int(posiTxs[i].fees).toLocaleString("es-ES") , 
                                                  myVentana.x + paso + anchoLiterales,   myVentana.y + posiY );            
                 posiY = posiY + paso;
 
@@ -2352,6 +2396,145 @@ class Bchain  {
       
     }//fin  muestraVentanaInfoAddr   
 
+    muestraVentanaInfoHeuris (miTx, i)                      {
+
+        let anchoLiterales;
+        let numeroLineas  ;
+        let paso          ;
+        let posiY         ;
+        let anchoVentana  ;
+        let altoVentana   ;
+        let anchoCanvas   ;
+        let altoCanvas    ;
+        let sobrepasaAncho;
+        let sobrepasaAlto ;
+
+        //Si es una Multi Txs: NN - no hay Info
+        if( miTx.substring(0,5) == 'Multi'){
+            return;   //No se muestra ventana de Info
+        }//fin if( miTx.substring(0,5) == 'Multi'
+
+
+        //Ocultamos ventana de ayuda
+        mostrandoAyuda      = false;
+        ayudaVentana.oculta();
+        myBchain.mueveFueraColorTag();
+
+
+        anchoLiterales  = 70;
+        numeroLineas    = 1;
+        paso            = 20;
+        posiY           = paso + 5;    
+
+
+        //Calculamos el número líneas para mostrar en ventana
+        if( posiTxs[i].heuristic[0] ) numeroLineas++;
+        if( posiTxs[i].heuristic[1] ) numeroLineas++;
+        if( posiTxs[i].heuristic[2] ) numeroLineas++;
+        if( posiTxs[i].heuristic[3] ) numeroLineas++;
+        if( posiTxs[i].heuristic[4] ) numeroLineas++;
+        if( posiTxs[i].heuristic[5] ) numeroLineas++;
+        if( posiTxs[i].heuristic[6] ) numeroLineas++;
+        if( posiTxs[i].heuristic[7] ) numeroLineas++;
+
+        anchoVentana        = anchoLiterales + textWidth( miTx )+ (2 * paso)  ;
+
+        altoVentana         = posiY + (paso * numeroLineas);
+        
+        anchoCanvas         = windowWidth   - margenCanvas.der;
+        altoCanvas          = windowHeight  - margenCanvas.pie;
+
+        sobrepasaAncho      = (mouseX + anchoVentana) - anchoCanvas + 20;
+        if(sobrepasaAncho > 0){
+          myVentana.x       = mouseX - sobrepasaAncho;
+        }else{
+          myVentana.x       = mouseX;
+        }//fin if(sobrepasaAncho > 0)
+
+        sobrepasaAlto   = (mouseY + altoVentana) - altoCanvas + 50;
+        if(sobrepasaAlto > 0){
+          myVentana.y       = mouseY - sobrepasaAlto;
+        }else{
+          myVentana.y       = mouseY;
+        }//fin if(sobrepasaAlto > 0)  
+      
+        myVentana.ancho     = anchoVentana;
+        myVentana.alto      = altoVentana;
+      
+        myVentana.margen = {'arriba' : 10 , 'abajo' : 7 , 'izq' : 7 , 'dere' : 7 };
+        myVentana.transparenciaVentana  = 240;
+        myVentana.tranparenciaMargen    = 120;
+        myVentana.redondeo = 3;
+        myVentana.sombra = false;
+
+
+        myVentana.update();
+        myVentana.display();
+      
+
+        //Texto
+        fill(myVentana.colorTexto);
+        textFont('Roboto');
+      
+        
+        text ('TXID: ' ,                        myVentana.x + paso,                     myVentana.y + posiY );
+        text (posiTxs[i].idTx ,                 myVentana.x + paso + anchoLiterales,    myVentana.y + posiY );
+        posiY = posiY + paso;
+
+
+
+        if( posiTxs[i].heuristic[0]  ){
+            text ('REUTILIZACIÓN DE DIRECCIONES. ' ,                myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+
+        }//fin if( posiTxs[i].heuristic[ 
+
+        if( posiTxs[i].heuristic[1]){
+            text ('PAGO CON NÚMEROS REDONDOS. ' ,                   myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+
+        }//fin if( posiTxs[i].heuristic[
+
+        if( posiTxs[i].heuristic[2]){
+            text ('PAGO A DIRECCIONES CON FORMATO DIFERENTE. ' ,     myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+
+        }//fin if( posiTxs[i].heuristic[         
+               
+        if( posiTxs[i].heuristic[3]){
+            text ('PAGO USANDO DIRECCIONES TAPROOT. ' ,              myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+
+        }//fin if( posiTxs[i].heuristic[  
+
+        if( posiTxs[i].heuristic[4]){
+            text ('PAGO A DIRECCIONES CON SCRIPT DIFERENTE. ' ,     myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+    
+        }//fin if( posiTxs[i].heuristic[          
+
+        if( posiTxs[i].heuristic[5]){
+            text ('ENTRADA INNECESARIA. ' ,                         myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+    
+        }//fin if( posiTxs[i].heuristic[ 
+
+        if( posiTxs[i].heuristic[6]){
+            text ('SALIDA CON EL MONTO MAYOR. ' ,                   myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+    
+        }//fin if( posiTxs[i].heuristic[             
+
+        if( posiTxs[i].heuristic[7]){
+            text ('VERSION DE LAS TRANSACCIONES. ' ,                myVentana.x + paso,  myVentana.y + posiY );
+            posiY = posiY + paso;
+    
+        }//fin if( posiTxs[i].heuristic[ 
+
+            
+
+    }//fin  muestraVentanaInfoHeuris 
+    
     muestraAyuda( video )                                   {
 
         videoTrab = sitioVideosAyuda + video;
@@ -2619,9 +2802,11 @@ class Bchain  {
 
         //Tx 
         //////////////////////////////////////////////////////////////////////
-        let idTxOver, encontradoTx = false;
+        let idTxOver, encontradoTx = false, encontradoHeuris = false;
 
+        //Esta dentro cuadro de Tx
         for(let i=0; i<posiTxs.length; i++) {
+
 
           idTxOver = myBchain.estaDentroTx ( posiTxs[i] );
           if ( idTxOver ){
@@ -2637,7 +2822,25 @@ class Bchain  {
 
           }//fin if ( idTxOver )
 
+
+          //Esta dentro semaforos heuristica
+          idTxOver = myBchain.estaDentroHeuris ( posiTxs[i] );
+          if ( idTxOver ){
+
+            myBchain.dibujaTxsAddrs();
+            
+            //Muestra ventana con INFO de Tx
+            myBchain.muestraVentanaInfoHeuris (idTxOver , i);           
+
+            encontradoHeuris = true;
+
+            return idTxOver;
+
+          }//fin if ( idTxOver )    
+
+
         }// fin de for(let i=0; i<posiTxs.length; i++)  
+
 
         //Addr
         //////////////////////////////////////////////////////////////////////
@@ -2662,7 +2865,7 @@ class Bchain  {
         }// fin de for(let i=0; i<posiTxs.length; i++)  
     
 
-        if(!encontradoTx && !encontradoAddr ) return 0;
+        if(!encontradoTx && !encontradoAddr && !encontradoHeuris ) return 0;
 
 
     }//fin informacionTxAddr()
@@ -2752,7 +2955,24 @@ class Bchain  {
     
     }//fin  toggleVid()    
 
+    getHeuristic(vin , vout)                                {
 
+        let arrResul = Array(false,false,false,false,false,false,false,false);
+
+        myHeuristic.inputs  = vin;
+        myHeuristic.out     = vout;
+        arrResul[0] = myHeuristic.reutilizaDirecciones();
+        arrResul[1] = myHeuristic.pagoNumeroRedondo();
+        arrResul[2] = myHeuristic.pagoFormatoDiferente();
+        arrResul[3] = myHeuristic.pagoUsandoTaproot();
+        arrResul[4] = myHeuristic.pagoADirScripDif();
+        arrResul[5] = myHeuristic.entradaInnecesaria();
+        arrResul[6] = myHeuristic.salidaMontoMayor();
+        arrResul[7] = myHeuristic.versionesDeTxs();
+
+        return arrResul;
+
+    }//fin getHeuristic(vin , vout)
 
     ////////////////////////////////////////////////////////////////////////////////////////
     //Métodos Privados

@@ -54,6 +54,7 @@ let posiTxs         = [{
                          'multiTxs'     : [],
                          'version'      : 0,
                          'lockTime'     : 0,
+                         'heuristic'    : [],
                       }];    
 
 let posiAddrs       = [{
@@ -110,6 +111,7 @@ let myCanvas          = new Canvas();
 let myVentana         = new Ventana();
 let ayudaVentana      = new Ventana();
 let myBchain          = new Bchain();
+let myHeuristic       = new Heuristic();
 
 //Array de índices entre arbolTxsAddrs y posiTxs, posiAddrs y MultiTxs                      
 let indexArbolTxs   ;
@@ -215,6 +217,7 @@ idTx                = "1d053e14643494a05e9a4279c42ec9f8924d52100e2e229c5e0174742
 //idTx                ='7e6070be5b6b7ac8ae300d9604cda631064f2d3125e2eeb7ba89718c38334506';
 //idTx = "993ced02486f9aaa5a5ed943141e05e436aac054dcea78a560f0f1860c80415a"
 //idTx = "065cca82c46242a0c197ef1cfd3e811dd7760c68fd5929c9ee66dae01db0e00e"
+idTx                ='2b00e209686b03b09c1f6901477ad3a935c0d568cc6cb5a417bba3fc91bdce74'
 
 let imagenBg;
 
@@ -514,7 +517,7 @@ async function draw()                                 {
 
   }//fin if(estadoAreaSelec > 0
 
-  //Mostrar información de TX y Addr
+  //Mostrar información de TX y Addr y  Heuristica
   if(estadoInfoTxAddr){
 
     if(mostarInfo) {
@@ -523,8 +526,6 @@ async function draw()                                 {
 
       if ( ratonSobreElemento != elementoAnterior ) {
         myBchain.dibujaTxsAddrs();
-
-        //frameRate(35);
 
       }//fin if ( ratonSobreElemento != elementoAnterior 
 
@@ -821,6 +822,9 @@ window.addEventListener("click",          function(e) {
 });  //fin window.addEventListener("click",  + i o I   ===> i o I  INFORMACION 
 
 window.addEventListener("wheel",          function(e) {
+
+  //Si estamos en primera pantalla de petición de Tx no atendemos mouse
+  if (nombrePantalla == 'primera') return;
 
   if (mostrandoAyuda) return;
 

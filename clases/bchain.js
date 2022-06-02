@@ -9,7 +9,6 @@ class Bchain  {
     ////////////////////////////////////////////////////////////////////////////////////////
     //Métodos Principales
     ////////////////////////////////////////////////////////////////////////////////////////
-
     putTxInicial(idTxTra)                                   {
 
         //Agregamos Tx original centrada en el canvas
@@ -47,7 +46,7 @@ class Bchain  {
     
     }//fin putTxInicial()    
 
-    async getDatosTxAddrNN(){
+    async getDatosTxAddrNN()                                {
         //Get datos antes de hacer doubleClick
         //Recogemos datos de Now Nodes en segundo plano
 
@@ -661,10 +660,10 @@ class Bchain  {
                                           Math.abs((posiAddrs[i].y2 - posiAddrs[i].y1)/2)  
                                         );
 
-            angulo = atan(  
-                             (posiAddrs[i].y2 - posiAddrs[i].y1) / 
-                             (posiAddrs[i].x2 - posiAddrs[i].x1)
-                         ); 
+            angulo       = atan(  
+                                  (posiAddrs[i].y2 - posiAddrs[i].y1) / 
+                                  (posiAddrs[i].x2 - posiAddrs[i].x1)
+                                ); 
 
             
 
@@ -689,28 +688,7 @@ class Bchain  {
         }//fin for(let i=0; i<posiAddrs.length; i++) ADDRs
 
 
-        //Heuristicas
-        ////////////////////////////////////////
-        for(let i=0; i<posiTxs.length; i++) {
-            
-            textoEspaciado = int(altoTx / 9);
-            noStroke();
-            let radio = 9 * 1 * sf;
-            for(let j=0; j<posiTxs[i].heuristic.length; j++) {
 
-                if(posiTxs[i].heuristic[j]){
-                    fill('red');
-                }else{
-                    fill('green');
-                }
-
-                ellipse (posiTxs[i].x - 10 ,
-                         posiTxs[i].y + (j * textoEspaciado) + 14 , 
-                         radio, radio) ;
-
-            }//fin for(let j=0; j<posiTxs[i].heuristic.length; j++
-
-        }//fin for(let i=0; i<posiTxs.length; i++) {
 
 
         //TXs
@@ -827,14 +805,41 @@ class Bchain  {
             }//fin if (posiTxs[i].tagTx)
 
 
-
-
         }// fin de for(let i=0; i<posiTx; i++  TXs
 
         //Dibujamos circulos rojos para eliminar
         if(marcaParaEliminar){
           this.circuloParaEliminar();
         }//fin 
+
+        //Dibujamos circulos rojos Heuristicas
+        ////////////////////////////////////////
+        for(let i=0; i<posiTxs.length; i++) {
+            
+            textoEspaciado = int(altoTx / 9);
+            noStroke();
+            let radio = 16 * sf;
+            for(let j=0; j<posiTxs[i].heuristic.length; j++) {
+
+                if(posiTxs[i].heuristic[j]){
+                    fill('red');
+                    ellipse (posiTxs[i].x + 10 ,
+                             posiTxs[i].y + 10 , 
+                             radio, radio);
+
+                }else{
+                    // No hacemos nada
+                    // fill('green');
+
+                }//fin if(posiTxs[i].heuristic[j]
+
+                // ellipse (posiTxs[i].x - 10 ,
+                //          posiTxs[i].y + (j * textoEspaciado) + 14 , 
+                //          radio, radio) ;
+
+            }//fin for(let j=0; j<posiTxs[i].heuristic.length; j++
+
+        }//fin for(let i=0; i<posiTxs.length; i++) {        
 
 
         //Muestra ventana del pié
@@ -1151,7 +1156,7 @@ class Bchain  {
 
     }//fin recalculaTxsSeleccionados( txsSeleccionados )
 
-    calculaXYDesdeAnguloDistancia (angulo, distancia, i, io ){
+    calculaXYDesdeAnguloDistancia (angulo, distancia, i,io ){
 
         let xPlaneta, yPlaneta , xSatelite, ySatelite;
 
@@ -1238,7 +1243,7 @@ class Bchain  {
 
         document.getElementById("idDivAyuda").style.visibility      = 'visible';
         document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
-        document.getElementById("idBotonPlay").style.visibility     = 'visible';
+        //document.getElementById("idBotonPlay").style.visibility     = 'visible';
         
         divAyuda.position(ayudaVentana.x + 20 ,70); 
         divAyuda.size(ancho , alto);
@@ -1389,7 +1394,7 @@ class Bchain  {
         document.getElementById("idTxtTag").value = "";
 
         //Mostramos info
-        mostarInfo = true;
+        mostrarInfo = true;
         botonInfo.html('con info.');
 
         myBchain.dibujaTxsAddrs();
@@ -1513,7 +1518,7 @@ class Bchain  {
         ayudaVentana.oculta();  
         
         //Mostramos info
-        mostarInfo = true;
+        mostrarInfo = true;
         botonInfo.html('con info.');
       
         myBchain.dibujaTxsAddrs();   
@@ -1588,13 +1593,18 @@ class Bchain  {
       
     }//fin  estaDentroAddr  
 
-    estaDentroHeuris(  posiTxTra )                              {
+    estaDentroHeuris(  posiTxTra )                          {
         let okTx = 0;
   
         if (
-            ( mouseX > posiTxTra.x - 15 ) && (mouseX < posiTxTra.x - 1 ) && 
-            ( mouseY > posiTxTra.y) && (mouseY < posiTxTra.y + altoTx  )
+            ( mouseX > posiTxTra.x  ) && (mouseX < posiTxTra.x + 25 ) && 
+            ( mouseY > posiTxTra.y  ) && (mouseY < posiTxTra.y + 25 )
            ){
+
+        // if (
+        //         ( mouseX > posiTxTra.x - 15 ) && (mouseX < posiTxTra.x - 1 ) && 
+        //         ( mouseY > posiTxTra.y) && (mouseY < posiTxTra.y + altoTx  )
+        //     ){            
          
             okTx =  posiTxTra.idTx;
            
@@ -1844,17 +1854,17 @@ class Bchain  {
         mostrandoAyuda      = false;
         ayudaVentana.oculta();
 
-        if(mostarInfo){
+        if(mostrarInfo){
             botonInfo.html('sin info.');
-            mostarInfo = false;
+            mostrarInfo = false;
             myBchain.dibujaTxsAddrs();
 
         }else{
             botonInfo.html('con info.');
-            mostarInfo = true;
+            mostrarInfo = true;
             myBchain.dibujaTxsAddrs();
 
-        }//fin if(mostarInfo
+        }//fin if(mostrarInfo
 
     }//fin muestraOcultaInfo
 
@@ -2547,7 +2557,7 @@ class Bchain  {
             document.getElementById("defaultCanvas0").style.top         = '500px';
             document.getElementById("idDivAyuda").style.visibility      = 'visible';
             document.getElementById("idLiteralAyuda").style.visibility  = 'visible';
-            document.getElementById("idBotonPlay").style.visibility     = 'visible';
+            //document.getElementById("idBotonPlay").style.visibility     = 'visible';
             document.getElementById("idBotonAyuda").value               = '< Volver';
 
             this.muestraOcultaTodosElementos( 'muestra' );
@@ -2567,9 +2577,8 @@ class Bchain  {
             pantallaVideo.position(490 , yPantallaVideo );
             pantallaVideo.size(700, 400);
             pantallaVideo.loop();
-            botonPlay.html('pausa');
-           
 
+            botonPlay.html('pausa');
             botonPlay.position(490, yPantallaVideo + 420 );
             botonPlay.mousePressed(this.toggleVid); 
       
@@ -2581,7 +2590,7 @@ class Bchain  {
             divAyuda.position(-20000, -20000);
             document.getElementById("idDivAyuda").style.visibility      = 'hidden';
             document.getElementById("idLiteralAyuda").style.visibility  = 'hidden';
-            document.getElementById("idBotonPlay").style.visibility     = 'hidden';
+            //document.getElementById("idBotonPlay").style.visibility     = 'hidden';
             document.getElementById("idBotonAyuda").value               = 'Ayuda';
 
             document.getElementById("defaultCanvas0").style.top         = '50px';
@@ -2596,6 +2605,191 @@ class Bchain  {
       
       
     }//fin  muestraAyuda()
+
+    muestraAyudaPrimeraPantalla( video )                    {
+
+        videoTrab = sitioVideosAyuda + video;
+
+        mostrandoAyuda   = true;
+
+        literalAyuda.position(canvasInputTx.xCentro - 400,  canvasInputTx.y + 180 );  
+
+        playing          = false;
+        if(pantallaVideo) pantallaVideo.remove();
+        pantallaVideo    = createVideo( videoTrab );
+        pantallaVideo.id("idPantallaVideo");
+        pantallaVideo.addClass("pantallaVideo");
+        pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+        pantallaVideo.size(710, 400);
+        pantallaVideo.pause();
+
+        botonPlay.html('play');
+        botonPlay.id('idPlay');
+        botonPlay.position(     canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 + 420 );
+        botonPlay.mousePressed(this.toggleVid); 
+
+        
+        //Botones otros vídeosidBotonAyudaPrimPan
+        let yBotones = 250, pasoYBotones = 50;
+
+        botonAyudaPrimPan1 = createButton(  'Desplegar Inputs' ); 
+        botonAyudaPrimPan1.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan1.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan1.size(150);
+        botonAyudaPrimPan1.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'desplegarInputs.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        }); 
+               
+        botonAyudaPrimPan2 = createButton(  'Mover Tx' ); 
+        botonAyudaPrimPan2.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan2.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan2.size(150);
+        botonAyudaPrimPan2.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'moverTx.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        }); 
+
+        botonAyudaPrimPan3 = createButton(  'Zoom Canvas' ); 
+        botonAyudaPrimPan3.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan3.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan3.size(150);
+        botonAyudaPrimPan3.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'zoomCanvas.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });        
+        
+        botonAyudaPrimPan4 = createButton(  'Selecciona Tx' ); 
+        botonAyudaPrimPan4.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan4.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan4.size(150);
+        botonAyudaPrimPan4.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'selecTx.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });   
+        
+        botonAyudaPrimPan5 = createButton(  'Colorear Tx' ); 
+        botonAyudaPrimPan5.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan5.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan5.size(150);
+        botonAyudaPrimPan5.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'colorearTx.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });      
+        
+        botonAyudaPrimPan6 = createButton(  'Etiquetar Tx' ); 
+        botonAyudaPrimPan6.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan6.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan6.size(150);
+        botonAyudaPrimPan6.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'etiquetarTx.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });         
+              
+        botonAyudaPrimPan7 = createButton(  'Eliminar Tx' ); 
+        botonAyudaPrimPan7.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan7.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan7.size(150);
+        botonAyudaPrimPan7.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'marcarDesmarcarEliminarTx.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });    
+        
+        botonAyudaPrimPan8 = createButton(  'Información' ); 
+        botonAyudaPrimPan8.id("idBotonAyudaPrimPan");
+        botonAyudaPrimPan8.position(canvasInputTx.xCentro - 570, yBotones);
+        yBotones += pasoYBotones;
+        botonAyudaPrimPan8.size(150);
+        botonAyudaPrimPan8.mousePressed(function(){ 
+            playing                     = false;
+
+            if(pantallaVideo) pantallaVideo.remove();
+            pantallaVideo    = createVideo( sitioVideosAyuda + 'sinInformacionTxAddr.mp4' );
+            pantallaVideo.id("idPantallaVideo");
+            pantallaVideo.position( canvasInputTx.xCentro - 400,  canvasInputTx.y + 240 );
+            pantallaVideo.size(730, 400);
+            pantallaVideo.pause();
+
+            botonPlay.html('play');
+        
+        });    
+                
+
+    }//fin  muestraAyudaPrimeraPantalla()
+
+
+
+
 
     muestraOcultaTodosElementos( estado )                   {
 
@@ -2807,22 +3001,6 @@ class Bchain  {
         //Esta dentro cuadro de Tx
         for(let i=0; i<posiTxs.length; i++) {
 
-
-          idTxOver = myBchain.estaDentroTx ( posiTxs[i] );
-          if ( idTxOver ){
-
-            myBchain.dibujaTxsAddrs();
-            
-            //Muestra ventana con INFO de Tx
-            myBchain.muestraVentanaInfoTx (idTxOver , i);           
-
-            encontradoTx = true;
-
-            return idTxOver;
-
-          }//fin if ( idTxOver )
-
-
           //Esta dentro semaforos heuristica
           idTxOver = myBchain.estaDentroHeuris ( posiTxs[i] );
           if ( idTxOver ){
@@ -2837,6 +3015,21 @@ class Bchain  {
             return idTxOver;
 
           }//fin if ( idTxOver )    
+
+
+          idTxOver = myBchain.estaDentroTx ( posiTxs[i] );
+          if ( idTxOver ){
+
+            myBchain.dibujaTxsAddrs();
+            
+            //Muestra ventana con INFO de Tx
+            myBchain.muestraVentanaInfoTx (idTxOver , i);           
+
+            encontradoTx = true;
+
+            return idTxOver;
+
+          }//fin if ( idTxOver )
 
 
         }// fin de for(let i=0; i<posiTxs.length; i++)  
@@ -2974,10 +3167,10 @@ class Bchain  {
 
     }//fin getHeuristic(vin , vout)
 
+
     ////////////////////////////////////////////////////////////////////////////////////////
     //Métodos Privados
     ////////////////////////////////////////////////////////////////////////////////////////
-
     #isInArbolTxsAddrs ( valor1, valor2, valor3 )           {
         for(let i=0; i<arbolTxsAddrs.length; i++) {
             if (( arbolTxsAddrs[i].rama[0] == valor1 ) && 
@@ -3334,7 +3527,7 @@ class Bchain  {
 
 
 
-function myTime(time) {
+function myTime(time)                                       {
     let date = new Date(time * 1000);
     const months = ["Ene.", "Feb.", "Mar.", "Abril", "Mayo", "Jun.", 
                     "Jul.", "Agos.", "Sept.", "Oct.", "Nov.", "Dic."];
@@ -3348,7 +3541,7 @@ function myTime(time) {
 }//fin miTime
 
 
-function cambiaVideo( video ){
+function cambiaVideo( video )                               {
 
     videoTrab       = sitioVideosAyuda + video;
 

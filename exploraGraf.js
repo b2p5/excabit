@@ -133,8 +133,8 @@ let mostrarRayado;
 let mostrarSombra;
 let mostarEliminar;
 let mostarLineas;
-let mostarInfo;
-let mostarInfoAnterior;
+let mostrarInfo;
+let mostrarInfoAnterior;
 let estadoAplicaZoom;
 
 //Semaforo de imprimir, solo true cuando cambia algo en el canvas NO UTILIZADO
@@ -217,7 +217,7 @@ idTx                = "1d053e14643494a05e9a4279c42ec9f8924d52100e2e229c5e0174742
 //idTx                ='7e6070be5b6b7ac8ae300d9604cda631064f2d3125e2eeb7ba89718c38334506';
 //idTx = "993ced02486f9aaa5a5ed943141e05e436aac054dcea78a560f0f1860c80415a"
 //idTx = "065cca82c46242a0c197ef1cfd3e811dd7760c68fd5929c9ee66dae01db0e00e"
-idTx                ='2b00e209686b03b09c1f6901477ad3a935c0d568cc6cb5a417bba3fc91bdce74'
+//idTx                ='2b00e209686b03b09c1f6901477ad3a935c0d568cc6cb5a417bba3fc91bdce74'
 
 let imagenBg;
 
@@ -229,7 +229,6 @@ let yPantallaVideo;
 let botonPlay;
 //Sitio de alojamiento de los vídeos
 let sitioVideosAyuda ;
-//let bAyudaDespImp ;
 let videoTrab  ;
 
 
@@ -238,6 +237,9 @@ let previousState;
 let stateIndex = 0;
 let state = [];
 
+//Botones Ayuda de la primera pantalla
+let botonAyudaPrimPan1, botonAyudaPrimPan2, botonAyudaPrimPan3, botonAyudaPrimPan4;
+let botonAyudaPrimPan5, botonAyudaPrimPan6, botonAyudaPrimPan7, botonAyudaPrimPan8;
 
 
 function preload()                                    {
@@ -254,27 +256,31 @@ function setup()                                      {
 
   //Elementos de la primera página
   nombreApp         = createP('<b>Ex</b>plorador de la <b>Ca</b>dena de <b>Bit</b>coin ( excabit )');
-  nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro - 80);
+  //nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro - 80);
+  nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 10);
   nombreApp.addClass("nombreApp");
 
 
   inputTx           = createInput();
   inputTx.size(722);
-  inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro);
+  //inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro);
+  inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 90);
   inputTx.addClass("inputTx");
   inputTx.value( idTx);
 
   botonBuscar       = createButton('Go');
-  botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.yCentro);
+  // botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.yCentro);
+  botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.y + 90);
   botonBuscar.addClass("botonBuscar");
   botonBuscar.mousePressed(getTx);
 
   literalPie         = createP(
                                'Tx de prueba. Puede seleccionar otro Tx.<br> ' +
-                               'Resolución mínima de pantalla 1280*520 píxeles. <br> ' +
-                               'En botón <b>Ayuda</b>, en la siguiente pantalla, tiene información sobre el manejo de excabit.' 
+                               'Resolución mínima de pantalla 1280*520 píxeles. <br> ' //+
+                              // + 'En botón <b>Ayuda</b>, en la siguiente pantalla, tiene información sobre el manejo de excabit.' 
                               );
-  literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
+  // literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
+  literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 120);
   literalPie.addClass("literalPie");
 
   
@@ -398,8 +404,8 @@ function setup()                                      {
   mostarEliminar          = false;
   mostarLineas            = true;
 
-  mostarInfo              = true;  
-  mostarInfoAnterior      = mostarInfo;
+  mostrarInfo             = true;  
+  mostrarInfoAnterior     = mostrarInfo;
   muestraPie              = true;
   muestraVideo            = true;
 
@@ -421,6 +427,15 @@ function setup()                                      {
 
   sitioVideosAyuda        = 'https://b2p5.github.io/excabit/media/videosAyuda/';
   yPantallaVideo          = 140;
+
+
+  //Pantalla ayuda primera pantalla
+  myBchain.muestraAyudaPrimeraPantalla('presentacionExcabit.mp4' );
+  
+
+
+
+
 
   //Arranca Estado -- Ctrl + Z
   saveState();
@@ -473,10 +488,10 @@ async function draw()                                 {
       
 
       //Quitar Info, con Info no funciona
-      if(mostarInfo){
-        mostarInfo = false;
+      if(mostrarInfo){
+        mostrarInfo = false;
         botonInfo.html('sin info.');
-      }//fin if(mostarInfo){
+      }//fin if(mostrarInfo){
         
       mouseXFin   = mouseX;
       mouseYFin   = mouseY;
@@ -504,11 +519,11 @@ async function draw()                                 {
       estadoAreaSelec = 0;
 
       //Mostramos info
-      if(mostarInfoAnterior){
-        mostarInfo = true;
+      if(mostrarInfoAnterior){
+        mostrarInfo = true;
         botonInfo.html('con info.');
       }else{
-        mostarInfo = false;
+        mostrarInfo = false;
         botonInfo.html('sin info.');        
       }
           
@@ -520,7 +535,7 @@ async function draw()                                 {
   //Mostrar información de TX y Addr y  Heuristica
   if(estadoInfoTxAddr){
 
-    if(mostarInfo) {
+    if(mostrarInfo) {
 
       ratonSobreElemento = myBchain.informacionTxAddr();
 
@@ -531,7 +546,7 @@ async function draw()                                 {
 
       elementoAnterior = ratonSobreElemento;
 
-    }//fin if(mostarInfo)
+    }//fin if(mostrarInfo)
 
   }//fin estadoInfoTxAddr
 
@@ -856,10 +871,10 @@ window.addEventListener("click",          function(e) {
       if(txEditTag){
 
         //Quitar Info, con Info no funciona
-        if(mostarInfo){
-          mostarInfo = false;
+        if(mostrarInfo){
+          mostrarInfo = false;
           botonInfo.html('sin info.');
-        }//fin if(mostarInfo){
+        }//fin if(mostrarInfo){
 
 
         txtTag = myBchain.editTagTx ( txEditTag );
@@ -888,10 +903,10 @@ window.addEventListener("click",          function(e) {
       if(txEditColor){
 
         //Quitar Info, con Info no funciona
-        if(mostarInfo){
-          mostarInfo = false;
+        if(mostrarInfo){
+          mostrarInfo = false;
           botonInfo.html('sin info.');
-        }//fin if(mostarInfo){
+        }//fin if(mostrarInfo){
 
 
         txtTag = myBchain.editColorTx ( txEditColor );
@@ -972,7 +987,7 @@ window.addEventListener("mousedown",      function(e) {
     
     if(estadoAreaSelec == 0 ){
       //Recogemos estado de Info
-      mostarInfoAnterior = mostarInfo;
+      mostrarInfoAnterior = mostrarInfo;
       //Recogemos posicion mouse
       mouseXIni   = mouseX;
       mouseYIni   = mouseY;
@@ -1067,6 +1082,10 @@ function mouseReleased()                              {
 }  //fin function mouseReleased()                      ===> Deshacer click , dblclick, mousedown etc
 
 function windowResized()                              {
+
+  if (nombrePantalla == 'primera') return;
+
+
   resizeCanvas( windowWidth - margenCanvas.der, windowHeight - margenCanvas.pie );
   canvas.position( margenCanvas.izq, margenCanvas.cabe );   
 
@@ -1082,11 +1101,24 @@ function windowResized()                              {
 
 function getTx()                                      {
 
-
   //Ocultamos ventana de ayuda
   myVentana.oculta();  
   ayudaVentana.oculta();
   mostrandoAyuda      = false;  
+
+  //Oculta ayuda primera pantalla
+  pantallaVideo.remove();
+  botonPlay.position(-20000, -20000);
+  literalAyuda.position(-20000, -20000);
+  botonAyudaPrimPan1.remove();
+  botonAyudaPrimPan2.remove();
+  botonAyudaPrimPan3.remove();
+  botonAyudaPrimPan4.remove();
+  botonAyudaPrimPan5.remove();
+  botonAyudaPrimPan6.remove();
+  botonAyudaPrimPan7.remove();
+  botonAyudaPrimPan8.remove();
+
 
   nombrePantalla = 'segunda';
     
@@ -1133,7 +1165,7 @@ function muestraAyuda(video , origen)                 {
     mostrandoAyuda  = !mostrandoAyuda;
     myBchain.muestraAyuda(video);
 
-  }
+  }//fin if (origen == 'cabecera')
 
   
 

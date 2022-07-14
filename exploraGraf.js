@@ -14,9 +14,6 @@ let dimCanvas_0 = dimCanvas;
 let margenCanvas    = {'pie': 60 , 'izq': 10 , 'der': 20, 'cabe': 50  };
 
 
-//Campo input de una Tx
-//let txtIdTx ;
-
 //Diccionario de datos
 //////////////////////////////////////////////////////////////////////
 let arbolTxsAddrs   = [{   
@@ -29,6 +26,7 @@ let arbolTxsAddrs   = [{
 
 let multiTxs        = [{ 
                         'id'        : 0, 
+                        'io'        : '' ,
                         'rama'      : [ "tx1", "addr" , "tx2"], 
                       }];                      
 
@@ -55,6 +53,7 @@ let posiTxs         = [{
                          'version'      : 0,
                          'lockTime'     : 0,
                          'heuristic'    : [],
+                         'esUtxo'       : false,
                       }];    
 
 let posiAddrs       = [{
@@ -75,6 +74,7 @@ let posiAddrs       = [{
                          'bgColor'   : {'r':127, 'g':127, 'b':127},
                          'movido'    : false, 
                          'value'     : 0,
+                         'esUtxo'    : false,
                          
                       }];               
 
@@ -155,6 +155,8 @@ let textoEspaciado;
 
 //Inputs
 let inputTx, botonBuscar, nombreApp, literalPie;
+let botonCargaTx;
+let botonJson;
 let canvasInputTx, canvasTrab;
 let divAyuda;
 let divOpciones;
@@ -174,6 +176,7 @@ let sliderTx;
 let sliderAddr;
 let botonImprimir;
 let botonVideo;
+let botonSave;
 
 //Informacion MouseOver
 let estadoInfoTxAddr;
@@ -214,9 +217,11 @@ let estadoDatosTxAddrNN;
 //Transación y Dirección de partida
 let idTx ;
 idTx                = "1d053e14643494a05e9a4279c42ec9f8924d52100e2e229c5e0174742d50e912";
-//idTx                ='7e6070be5b6b7ac8ae300d9604cda631064f2d3125e2eeb7ba89718c38334506';
+idTx                = '85e72c0814597ec52d2d178b7125af0e3cfa07821912ca81bf4b1fbe4b4b70f2';
+//idTx                = "ce840c11aac9be9731f76af0d6bdbc95780bff1d7842c4985f3906ea956bcdde"
 //idTx = "993ced02486f9aaa5a5ed943141e05e436aac054dcea78a560f0f1860c80415a"
 //idTx = "065cca82c46242a0c197ef1cfd3e811dd7760c68fd5929c9ee66dae01db0e00e"
+// idAddr = "3No7RhxmeknFkXKGVkshSisv64fB4NanQZ"
 //idTx                ='2b00e209686b03b09c1f6901477ad3a935c0d568cc6cb5a417bba3fc91bdce74'
 
 let imagenBg;
@@ -230,6 +235,7 @@ let botonPlay;
 //Sitio de alojamiento de los vídeos
 let sitioVideosAyuda ;
 let videoTrab  ;
+// let sitioJsonTx ;
 
 
 //Tratamiento del estado
@@ -246,8 +252,8 @@ function preload()                                    {
   imagenBg = loadImage('https://b2p5.github.io/excabit/media/fondoPantalla.jpg');
 }//fin function preload
 
-function setup()                                      {
 
+function setup()                                      {
 
   //Pantalla de entrada
   canvasInputTx     = myCanvas.putCanvas_0 ();
@@ -256,31 +262,40 @@ function setup()                                      {
 
   //Elementos de la primera página
   nombreApp         = createP('<b>Ex</b>plorador de la <b>Ca</b>dena de <b>Bit</b>coin ( excabit )');
-  //nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro - 80);
-  nombreApp.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 10);
+  nombreApp.position(canvasInputTx.xCentro - 400    , canvasInputTx.y + 10);
   nombreApp.addClass("nombreApp");
 
 
-  inputTx           = createInput();
+  inputTx           = createInput(' ');
   inputTx.size(722);
-  //inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro);
-  inputTx.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 90);
+  inputTx.position(canvasInputTx.xCentro - 400      , canvasInputTx.y + 90);
   inputTx.addClass("inputTx");
   inputTx.value( idTx);
 
   botonBuscar       = createButton('Go');
-  // botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.yCentro);
-  botonBuscar.position(canvasInputTx.xCentro + 350 ,  canvasInputTx.y + 90);
+  botonBuscar.position(canvasInputTx.xCentro + 350  , canvasInputTx.y + 90);
   botonBuscar.addClass("botonBuscar");
   botonBuscar.mousePressed(getTx);
 
+  botonCargaTx      = createFileInput(getCargaTx    , multiple=false );
+  botonCargaTx.attribute("accept", "application/json" );
+  botonCargaTx.attribute("style", "display:none" );
+  botonCargaTx.position(canvasInputTx.xCentro + 470 , canvasInputTx.y + 95);
+  botonCargaTx.addClass("botonCargaTx");
+  botonCargaTx.id("botonCargaTx");
+
+  botonJson         = createButton('Cargar Tx');
+  botonJson.attribute("style", "display:block;width:120px; height:30px;" );
+  botonJson.attribute("onclick", "document.getElementById('botonCargaTx').click()" );
+  botonJson.position(canvasInputTx.xCentro + 470 , canvasInputTx.y + 97);
+  botonJson.addClass("botonCargaTx");
+
+  
   literalPie         = createP(
                                'Tx de prueba. Puede seleccionar otro Tx.<br> ' +
-                               'Resolución mínima de pantalla 1280*520 píxeles. <br> ' //+
-                              // + 'En botón <b>Ayuda</b>, en la siguiente pantalla, tiene información sobre el manejo de excabit.' 
+                               'Resolución mínima de pantalla 1280*520 píxeles. <br> '  
                               );
-  // literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.yCentro + 37);
-  literalPie.position(canvasInputTx.xCentro - 400 ,  canvasInputTx.y + 120);
+  literalPie.position(canvasInputTx.xCentro - 400   , canvasInputTx.y + 120);
   literalPie.addClass("literalPie");
 
   
@@ -306,6 +321,8 @@ function setup()                                      {
   botonImprimir.addClass("botonImprimir");  
   botonVideo       = createButton('vídeo');
   botonVideo.addClass("botonVideo");   
+  botonSave       = createButton('save');
+  botonSave.addClass("botonSave");   
 
   textTx            = createElement('h5', 'Tx: ');
   textTx.addClass("textTx");
@@ -331,7 +348,7 @@ function setup()                                      {
   sliderAddr.attribute('title' ,    "Aumenta / Reduce la distancia entre Txs.  " );
   botonImprimir.attribute('title' , "Imprime el canvas. " );
   botonVideo.attribute('title' ,    "Muestra controles para grabar vídeo. " );
-
+  botonSave.attribute('title' ,     "Salva estado actual. " );
 
 
   //Gif animado de descarga
@@ -345,6 +362,7 @@ function setup()                                      {
   buttonTag         = createButton('ok');
   buttonTag.addClass("buttonTag");
 
+  //Crea botones para color
   buttonColor1      = createButton('-');
   buttonColor2      = createButton('-');
   buttonColor3      = createButton('-');
@@ -428,13 +446,12 @@ function setup()                                      {
   sitioVideosAyuda        = 'https://b2p5.github.io/excabit/media/videosAyuda/';
   yPantallaVideo          = 140;
 
+  // sitioJsonTx             = 'https://b2p5.github.io/excabit/json/';
+
 
   //Pantalla ayuda primera pantalla
   myBchain.muestraAyudaPrimeraPantalla('presentacionExcabit.mp4' );
   
-
-
-
 
 
   //Arranca Estado -- Ctrl + Z
@@ -647,6 +664,21 @@ window.addEventListener("dblclick", async function(e) {
       let esUnMultiTx = false;
       if(idTxADesplegar.substring(0, 8) == 'Multi Tx'){
         esUnMultiTx = true;
+
+
+
+//editar multiTxs 
+//seleccionar en nueva pantalla
+// console.log(multiTxs);
+// console.log(idTxADesplegar);
+console.log(posiTxs[i].multiTxs);
+console.log(posiTxs[0].idTx);
+
+
+
+
+    
+
       }//fin if(idTxADesplegar.substring(0, 8) == 'Multi Tx'
 
   
@@ -661,8 +693,8 @@ window.addEventListener("dblclick", async function(e) {
 
 
         await myBchain.getDatos      ( idTxADesplegar, i );
-              myBchain.putTxsAddrs   ( idTxADesplegar    );
-              myBchain.dibujaTxsAddrs();
+        myBchain.putTxsAddrs   ( idTxADesplegar    );
+        myBchain.dibujaTxsAddrs();
 
         divGifAnimado.hide();
 
@@ -1099,6 +1131,69 @@ function windowResized()                              {
 
 }//fin function windowResized
 
+function getCargaTx(file) {
+  //console.log(file);
+  if (file.type == "application" && file.subtype === 'json' ) {
+    
+    altoTx         = file.data.altoTx;
+    anchoTx        = file.data.anchoTx;
+    posiTxs        = file.data.posiTxs;
+    posiAddrs      = file.data.posiAddrs;
+    radioSatelites = file.data.radioSatelites;
+    mostrarSombra  = file.data.mostrarSombra;
+    mostrarRayado  = file.data.mostrarRayado;
+   
+    //Ocultamos ventana de ayuda
+    myVentana.oculta();  
+    ayudaVentana.oculta();
+    mostrandoAyuda      = false;  
+
+    //Oculta ayuda primera pantalla
+    pantallaVideo.remove();
+    botonPlay.position(-20000, -20000);
+    literalAyuda.position(-20000, -20000);
+    botonAyudaPrimPan1.remove();
+    botonAyudaPrimPan2.remove();
+    botonAyudaPrimPan3.remove();
+    botonAyudaPrimPan4.remove();
+    botonAyudaPrimPan5.remove();
+    botonAyudaPrimPan6.remove();
+    botonAyudaPrimPan7.remove();
+    botonAyudaPrimPan8.remove();
+
+    nombrePantalla = 'segunda';
+
+    //Recoge valor del Tx original de la primera pantalla
+    idTx = posiTxs[0].idTx;
+
+    //Lo ponemos en txtIdTx
+    document.getElementById("txtIdTx").innerHTML = idTx ;
+
+    //Mostramos cabecera, logo, título, Tx, ayuda
+    document.getElementById("container").style.visibility = 'visible';
+    
+    //Escondemos inputTx, nombreApp y botonBuscar de la primera pantalla
+    inputTx.position(-20000, -20000);
+    botonBuscar.position(-20000, -20000);
+    nombreApp.position(-20000, -20000);
+    literalPie.position(-20000, -20000);
+    botonCargaTx.position(-20000, -20000);
+    botonJson.position(-20000, -20000);
+
+    background(222);
+
+    //Cambia a canvas de trabajo
+    canvasTrab = myCanvas.putCanvas();
+
+    myBchain.dibujaTxsAddrs();
+
+  }else{
+    alert ('No es un fichero JSON');
+
+  }//fin if (file.type == "application" && file.subtype === 'js
+
+}//fin function getCargaTx(file)
+
 function getTx()                                      {
 
   //Ocultamos ventana de ayuda
@@ -1136,21 +1231,58 @@ function getTx()                                      {
   botonBuscar.position(-20000, -20000);
   nombreApp.position(-20000, -20000);
   literalPie.position(-20000, -20000);
+  botonCargaTx.position(-20000, -20000);
+  botonJson.position(-20000, -20000);
 
   background(222);
 
   //Cambia a canvas de trabajo
   canvasTrab = myCanvas.putCanvas();
   
-  //Rastrea si nos colocamos sobre algún elemento
-  //canvasTrab.mouseOver( mouseOverTxAddr );
+  // LocalStorage
+  ////////////////////////////////////////////////////////////////////////
+  //Rastrea si hay fichero guardado con los datos de la TX
+  let sinDatosLocalStorage = true;
+  // if (localStorage["myTx"]) {
 
-  //Ancho, alto y radio de los Tx
-  myBchain.putAnchoAlto(200, 100, 250);
+  //   let myTx = getItem('myTx');
 
-  //posiTxs de arranque, original o inicial
-  myBchain.putTxInicial(idTx);
-  myBchain.dibujaTxsAddrs();
+  if (localStorage[idTx]) {
+
+    let myTx = getItem(idTx);    
+
+    if( (myTx.posiTxs.length > 0 )){ 
+
+      if( (myTx.posiTxs[0].idTx == idTx) ){ 
+
+        //Recuperamos valores del Tx
+        posiTxs             = myTx.posiTxs;
+        posiAddrs           = myTx.posiAddrs;
+        anchoTx             = myTx.anchoTx;
+        altoTx              = myTx.altoTx;
+        radioSatelites      = myTx.radioSatelites;
+
+        myBchain.putAnchoAlto(anchoTx, altoTx, radioSatelites);
+
+        myBchain.dibujaTxsAddrs();
+
+        sinDatosLocalStorage = false;
+
+      }//fin if( myTx.posiTxs[0].idTx == idTx )
+
+    }//fin if( (myTx.posiTxs.length > 0 )){
+
+  }//fin if (localStorage["myTx"]) 
+
+  if (sinDatosLocalStorage){
+        //Ancho, alto y radio de los Tx
+        myBchain.putAnchoAlto(200, 100, 250);
+
+        //posiTxs de arranque, original o inicial
+        myBchain.putTxInicial(idTx);
+        myBchain.dibujaTxsAddrs();
+
+  }//fin if (sinDatosLocalStorage)
 
 
 

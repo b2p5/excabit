@@ -36,6 +36,7 @@ class Bchain  {
                         'version'       : 0,
                         'lockTime'      : 0,
                         'heuristic'     : [],
+                        // 'esUtxo'        : false,
                         
                     });     
                     
@@ -47,11 +48,10 @@ class Bchain  {
     }//fin putTxInicial()    
 
     async getDatosTxAddrNN()                                {
-        //Get datos antes de hacer doubleClick
+        //Get datos de Tx antes de hacer doubleClick
         //Recogemos datos de Now Nodes en segundo plano
 
         let resUnaTx, idTx, yaEstaBajado ;
-        //let resUnaAddr, idAddr;
 
         for(let i=0; i<posiTxs.length; i++) {
 
@@ -90,6 +90,11 @@ class Bchain  {
 
                 posiTxs[i].heuristic        = this.getHeuristic(resUnaTx.vin, resUnaTx.vout);
 
+                ////////// ¿Es un UTXO?
+                ////////// if(posiTxs[i].numVout == 0){
+                //////////     posiTxs[i].esUtxo = true;
+                ////////// }//fin if(posiTxs[i].numVout == 0)
+
                 divGifAnimado.hide();
 
             }//fin if(!yaEstaBajado
@@ -97,12 +102,11 @@ class Bchain  {
         }//fin for(let i=0; i<posiTxs.length; i++)
 
 
-        // resUnaAddr      = await myConex.getAddrNN ( idAddr );
-
         myBchain.dibujaTxsAddrs();
 
 
     }//fin getDatosTxAddrNN
+    
 
     async getDatos( idTxTra , index )                       {
         
@@ -110,16 +114,18 @@ class Bchain  {
         let idAddr, idTxsOut, numTxsMulti; 
         let tipoTx = '1a1';
         let arrMultiTxs;
+        let esUnUTXO = false;
 
         //Get en servidor datos de una Tx
         resUnaTx        = await myConex.getTxNN ( idTxTra );
 
+// console.log(resUnaTx);
+            
         if (resUnaTx.error){
             alert( 'Error en: ' + resUnaTx.error );
             return;
         }
 
-//console.log(resUnaTx);
 
         //Recoge datos de la Tx para grabar en posiTxs
         posiTxs[index].blockHeight      = resUnaTx.blockHeight;
@@ -142,6 +148,11 @@ class Bchain  {
 
         //INPUTS
         for(let i=0; i<resUnaTx.vin.length; i++) {
+
+            //Si no es una direccion la saltamos
+            if(!resUnaTx.vin[i].isAddress){
+                continue;
+            }//fin if(!resUnaTx.vin.isAddress
 
             //arbolTxsAddrs
             ///////////////
@@ -181,6 +192,7 @@ class Bchain  {
                                 'version'       : 0,
                                 'lockTime'      : 0,
                                 'heuristic'     : [],
+                                // 'esUtxo'        : false,
                             });
                             
             }//fin if ( !this.buscaPosiTxs ( idTxTra ) 
@@ -206,6 +218,7 @@ class Bchain  {
                                 'version'       : 0,
                                 'lockTime'      : 0,
                                 'heuristic'     : [],
+                                // 'esUtxo'        : false,
                             });        
                         
             }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -231,6 +244,7 @@ class Bchain  {
                                     'bgColor'   : {'r':127, 'g':127, 'b':127},
                                     'movido'    : false,
                                     'value'     : resUnaTx.vin[i].value,
+                                    'esUtxo'    : false,
                                 }); 
 
             }//fin   if (!#isInPosiAddrs(resUnaTx.vin[i].addresses[0], idTxTra , resUnaTx.vin[i                   
@@ -238,17 +252,35 @@ class Bchain  {
         }//fin for(let i=0; i<resUnaTx.vin.length; i++)
 
 
-        //OUTPUTS
+        //OUTPUTS   -   Puede ser un UTXO
         for(let i=0; i<resUnaTx.vout.length; i++) {
 
             idAddr          = resUnaTx.vout[i].addresses[0];
 
-            
+            //Saltamos los OP_RETURN
+            if (idAddr.substring(0, 9) === 'OP_RETURN'){
+                continue;
+            }//fin 
 
             //Get en servidor datos de una Addr
             resUnaAddr      = await myConex.getAddrNN ( idAddr );
-//console.log(resUnaAddr);
 
+            // esUnUTXO = await datosAddrNN.datosUtxo;
+            // console.log(esUnUTXO);
+
+// console.log(resUnaAddr);
+
+
+            // ¿Es un UTXO? => todos los Addrs son UTXO
+            // Si totalSent == 0  ===> Es UTXO
+            // Si totalReceived > totalSent  ===> ¿Es UTXO?
+            if((resUnaAddr.totalSent == 0) ||
+               (resUnaAddr.totalReceived > resUnaAddr.totalSent)){
+                esUnUTXO = true;
+            }else{
+                esUnUTXO = false;
+            }//fin if(posiTxs[i].numVout == 0)
+                
             //Array con los txs de una Addr 1aN
             //Solamente los 10 primeros
             //arrMultiTxs     = (resUnaAddr.txids).slice(0, 9);
@@ -256,9 +288,7 @@ class Bchain  {
         
             for(let j=0; j<resUnaAddr.txids.length; j++) {
 
-//¿Que pasa cuando txids tiene lenght = 1 y resUnaAddr.txids[j] == idTxTra 
-//Parece que es un utxo 
-////???????????????????/////////                
+
                 if (resUnaAddr.txids[j] != idTxTra){
                     
                     //arbolTxsAddrs y multiTxs
@@ -268,7 +298,6 @@ class Bchain  {
                     idTxsOut        = resUnaAddr.txids[j];
                     tipoTx          = '1a1';
                     if(resUnaAddr.txs > 2){    //Con mas de 2 llamamos Multi Txs
-                        //numTxsMulti = int(resUnaAddr.txs)-1;
                         numTxsMulti = int((resUnaAddr.txids).length)-1;
                         idTxsOut    = 'Multi Txs: ' + numTxsMulti + ' - ' + resUnaAddr.totalSent;
                         tipoTx      = '1aN';
@@ -321,6 +350,7 @@ class Bchain  {
                                                 'version'       : 0,
                                                 'lockTime'      : 0,
                                                 'heuristic'     : [],
+                                                'esUtxo'        : false,
                                             });
 
                     }//fin if ( !this.buscaPosiTxs ( 'idTxTra'   ) 
@@ -344,6 +374,7 @@ class Bchain  {
                                                 'version'       : 0,
                                                 'lockTime'      : 0,
                                                 'heuristic'     : [],
+                                                'esUtxo'        : esUnUTXO,
                                             });  
 
                     }//fin if ( !this.buscaPosiTxs (   idTxTra ) 
@@ -369,6 +400,8 @@ class Bchain  {
                                             'bgColor'   : {'r':127, 'g':127, 'b':127},
                                             'movido'    : false,
                                             'value'     : resUnaTx.vout[i].value,
+                                            'esUtxo'    : esUnUTXO,
+
                                         });   
                     }//fin  if (!#isInPosiAddrs(idAddr, idTxTra , idTxsOut                    
                 
@@ -644,10 +677,20 @@ class Bchain  {
             //Elimina / Pone Sombra
             if (mostrarSombra) this.sombra(2 , 3);
 
-            line(
+            if (!posiAddrs[i].esUtxo){
+                line(
+                        posiAddrs[i].x1, posiAddrs[i].y1, 
+                        posiAddrs[i].x2, posiAddrs[i].y2
+                    );
+            } else {
+                curveColor = color ( '#77F' );
+                stroke(curveColor);
+
+                line(
                     posiAddrs[i].x1, posiAddrs[i].y1, 
                     posiAddrs[i].x2, posiAddrs[i].y2
                 );
+            }
 
             //FLECHA ADDR
             //////////////////////////////////////////////////////////
@@ -683,7 +726,14 @@ class Bchain  {
             triangle(0, 0, verticeB.x, verticeB.y, verticeC.x, verticeC.y);
 
             rotate( 45  -  angulo );
+
+            if (posiAddrs[i].esUtxo){
+                text ('UTXO' ,  verticeB.x + 17, verticeB.y );
+            }
+
             translate(-puntoCentral.x , -puntoCentral.y);
+
+
 
         }//fin for(let i=0; i<posiAddrs.length; i++) ADDRs
 
@@ -716,10 +766,19 @@ class Bchain  {
             //Elimina / Pone Sombra
             if (mostrarSombra) this.sombra(5 , 10);
 
-            rect( posiTxs[i].x,     posiTxs[i].y, 
-                  anchoTx     ,     altoTx , 7);
 
-            
+            if(posiTxs[i].x){
+                if(!posiTxs[i].esUtxo){
+                    rect( posiTxs[i].x,     posiTxs[i].y, 
+                          anchoTx     ,     altoTx , 7);
+                }else{
+                    fill('#77F');
+                    rect( posiTxs[i].x,     posiTxs[i].y, 
+                          anchoTx     ,     altoTx , 7);
+                    fill(squareColor);
+                }
+
+            }//fin if(posiTxs[i].x)
 
             //Elimina / Pone Sombra
             if (mostrarSombra) this.sombra(0 , 0);
@@ -795,14 +854,35 @@ class Bchain  {
             }//fin if((posiTxs[i].idTx).substring(0,5) == 'Multi'
 
 
-
             //Etiqueta
             if (posiTxs[i].tagTx){
-              margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].tagTx)/2);
-              text (posiTxs[i].tagTx , 
-                    posiTxs[i].x + margenIzqTx, 
-                    posiTxs[i].y + (6 * textoEspaciado) - 0 );
+                margenIzqTx = (anchoTx/2) - (textWidth(posiTxs[i].tagTx)/2);
+                text (posiTxs[i].tagTx , 
+                      posiTxs[i].x + margenIzqTx, 
+                      posiTxs[i].y + (6 * textoEspaciado) - 0 );
             }//fin if (posiTxs[i].tagTx)
+
+
+            // ¿Es un UTXO?
+            if(posiTxs[i].esUtxo){
+                let posiX = posiTxs[i].x - 15;
+
+                fill('#77F');
+                text ('U' , 
+                      posiX, 
+                      posiTxs[i].y + (2 * textoEspaciado));
+                text ('T' , 
+                      posiX, 
+                      posiTxs[i].y + (3 * textoEspaciado));
+                text ('X' , 
+                      posiX, 
+                      posiTxs[i].y + (4 * textoEspaciado));
+                text ('O' , 
+                      posiX, 
+                      posiTxs[i].y + (5 * textoEspaciado));
+                fill(0);
+            }//fin if(posiTxs[i].esUtxo)
+
 
 
         }// fin de for(let i=0; i<posiTx; i++  TXs
@@ -844,7 +924,7 @@ class Bchain  {
 
         //Muestra ventana del pié
         if(muestraPie ) this.ventanaPie();
-  
+
         pop();
 
     }//fin dibujaTxsAddrs
@@ -1221,7 +1301,6 @@ class Bchain  {
 
         posiAddrs[i].angulo         = angulo; 
 
-//console.log(i , angulo , x1 - x2 );
 
         //Actualiza angulo y distancia en arbolTxsAddrs
         //OJO , las addr entre dos TX guarda el angulo de la última addr en posiAddrs
@@ -1569,6 +1648,7 @@ class Bchain  {
       
         let ancho     = addrTrab.ancho;
         let d, A, B, C, pendiente;
+        let mouseDentroSegmento = false;
       
         //Si es una linea vertical => pendiente = infinito
         if(addrTrab.x2 == addrTrab.x1){
@@ -1579,11 +1659,24 @@ class Bchain  {
           B         = - 1;
           C         = addrTrab.y1 - (pendiente * addrTrab.x1);
           d         = Math.abs ( (A * mouseX + B * mouseY + C) / Math.sqrt (A**2 + B**2) );
-      
+         
         }//fin if(dimAddrTrab.x2 == dimAddrTrab.x1)
+
+
+        //Comprobamos que mouse está dentro del segmento (x1,y1) - (x2, y2)
+        if( ((mouseX >= addrTrab.x1 && mouseX <= addrTrab.x2) || 
+             (mouseX <= addrTrab.x1 && mouseX >= addrTrab.x2))  
+            &&
+            ((mouseY >= addrTrab.y1 && mouseY <= addrTrab.y2) || 
+             (mouseY <= addrTrab.y1 && mouseY >= addrTrab.y2)) 
+            ){
+
+            mouseDentroSegmento = true;
+
+        }//fin if( ((mouseX >= addrTrab.x1 && mouseX <= addrT
         
         //Si esta dentro de addr
-        if (d <= int(ancho/2)){
+        if ((d <= int(ancho/2) && mouseDentroSegmento)){
          
           okAddr =  addrTrab.idAddr;
            
@@ -1997,7 +2090,22 @@ class Bchain  {
         botonVideo.mousePressed(this.controlesGrabaVideo); 
         xBoton   += anchoBoton + entreBotones;
 
+        botonSave.position( xBoton ,  ventanaPie.y + 54 );
+        botonSave.mousePressed(this.saveRecuperaDatosTx); 
+        xBoton   += anchoBoton + entreBotones;
+
     }//fin ventanaPie()
+
+    saveRecuperaDatosTx()                                   {
+
+        //Ocultamos ventana de ayuda
+        mostrandoAyuda      = false;
+        ayudaVentana.oculta();
+        myBchain.mueveFueraColorTag();  
+
+        myBchain.saveJSON();
+
+    }//fin saveRecuperaDatosTx
 
     controlesGrabaVideo()                                   {
 
@@ -2006,7 +2114,6 @@ class Bchain  {
         ayudaVentana.oculta();
         myBchain.mueveFueraColorTag();  
 
-      // P5Capture.getInstance();
       if (muestraVideo) {
         myBchain.dibujaTxsAddrs();
         document.getElementsByClassName("p5c-container")[0].style.visibility = 'visible';
@@ -2352,7 +2459,7 @@ class Bchain  {
         posiY           = paso + 5;        
 
         //Calculamos el número líneas para mostrar en ventana
-        if( posiAddrs[i].value   > 0  > 0 ) numeroLineas++;
+        if( posiAddrs[i].value   > 0  ) numeroLineas++;
 
         
         anchoVentana        = anchoLiterales + textWidth( miAddr )+ (2 * paso)  ;
@@ -2993,6 +3100,7 @@ class Bchain  {
 
     informacionTxAddr()                                     {
 
+        //if ((movedX == 0) && (movedY == 0) ) return 0;
 
         //Tx 
         //////////////////////////////////////////////////////////////////////
@@ -3043,7 +3151,7 @@ class Bchain  {
 
           idAddrOver = myBchain.estaDentroAddr ( posiAddrs[i] );
           if ( idAddrOver ){
-
+    
             myBchain.dibujaTxsAddrs();
 
             //Muestra ventana con INFO de Tx
@@ -3069,7 +3177,6 @@ class Bchain  {
         let anchoArea = abs(mouseXFin - mouseXIni);
         let altoArea  = abs(mouseYFin - mouseYIni);
 
-        // console.log(mouseXIni , mouseYIni ,  anchoArea  ,  altoArea );
 
         for(let i=0; i<posiTxs.length; i++) {
 
@@ -3151,17 +3258,22 @@ class Bchain  {
     getHeuristic(vin , vout)                                {
 
         let arrResul = Array(false,false,false,false,false,false,false,false);
+//console.log(vin);
+    
+        if(vin.isAddress){
 
-        myHeuristic.inputs  = vin;
-        myHeuristic.out     = vout;
-        arrResul[0] = myHeuristic.reutilizaDirecciones();
-        arrResul[1] = myHeuristic.pagoNumeroRedondo();
-        arrResul[2] = myHeuristic.pagoFormatoDiferente();
-        arrResul[3] = myHeuristic.pagoUsandoTaproot();
-        arrResul[4] = myHeuristic.pagoADirScripDif();
-        arrResul[5] = myHeuristic.entradaInnecesaria();
-        arrResul[6] = myHeuristic.salidaMontoMayor();
-        arrResul[7] = myHeuristic.versionesDeTxs();
+            myHeuristic.inputs  = vin;
+            myHeuristic.out     = vout;
+            arrResul[0] = myHeuristic.reutilizaDirecciones();
+            arrResul[1] = myHeuristic.pagoNumeroRedondo();
+            arrResul[2] = myHeuristic.pagoFormatoDiferente();
+            arrResul[3] = myHeuristic.pagoUsandoTaproot();
+            arrResul[4] = myHeuristic.pagoADirScripDif();
+            arrResul[5] = myHeuristic.entradaInnecesaria();
+            arrResul[6] = myHeuristic.salidaMontoMayor();
+            arrResul[7] = myHeuristic.versionesDeTxs();
+
+        }//fin if(vin.isAddress
 
         return arrResul;
 
@@ -3508,7 +3620,6 @@ class Bchain  {
         for( let i=0; i<posiTxs.length; i++) {
 
 
-            // console.log(posiTxs[i].idTx);
     
             // esOk  = txsPulsadas.find (element => element  === posiTxs[i]);
 
@@ -3521,6 +3632,28 @@ class Bchain  {
         }//fin for( let i=0; i<posiTxs.length; i++)
 
     }//fin recalculaTodosTxsAddrs
+
+    
+
+    saveJSON()                                              {
+        
+        let data = {
+                    'posiTxs'           : posiTxs , 
+                    'posiAddrs'         : posiAddrs,
+                    'anchoTx'           : anchoTx,
+                    'altoTx'            : altoTx,
+                    'radioSatelites'    : radioSatelites,
+                    'mostrarSombra'     : mostrarSombra,
+                    'mostrarRayado'     : mostrarRayado,
+                   };
+
+        //Salva en fichero externo  un Item por Tx
+        saveJSON(data, idTx + ".json");  
+        
+        //Salva en memoria interna del navegador un Item por Tx
+        storeItem(idTx , data);
+
+    }//fin saveJSON
 
 
 }// fin de class Bchain  
@@ -3570,3 +3703,25 @@ function cambiaVideo( video )                               {
     botonPlay.position(490, yPantallaVideo + 420 );
 
 }//fin cambiaVideo
+
+
+       //let fs = requiere('fs');
+        //data     = JSON.stringify(data);
+        //storeItem('myTx', data); 
+               
+        // data     = JSON.stringify(data);
+        // fs.writeFile('tx.json', data);
+
+        // data     = JSON.stringify(data);
+
+        // let bl = new Blob([data], {
+        //    type: "text/html"
+        // });
+
+        // let a = document.createElement("a");
+        // a.href = URL.createObjectURL(bl);
+        // a.download = idTx + ".json";
+        // a.hidden = true;
+        // document.body.appendChild(a);
+        // a.innerHTML = "someinnerhtml";
+        // a.click();

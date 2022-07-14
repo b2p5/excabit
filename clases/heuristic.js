@@ -272,6 +272,7 @@ class Heuristic  {
 
   }//fin de pagoUsandoTaproot
 
+  
 
   //////////////////////////////////////////////////////////////////////////
   pagoFormatoDiferente(){
@@ -342,6 +343,7 @@ class Heuristic  {
   }//fin de pagoFormatoDiferente
 
 
+
   //////////////////////////////////////////////////////////////////////////
   pagoNumeroRedondo(){
 
@@ -372,6 +374,7 @@ class Heuristic  {
     return this.esOk;
 
   }// fin de pagoNumeroRedondo
+
 
 
   //////////////////////////////////////////////////////////////////////////
@@ -433,6 +436,7 @@ class Heuristic  {
   }//fin numeroCeros (numero
 
 
+
   tipoDeDireccion (addr){
 
     var tipoDirec = 0;
@@ -450,6 +454,7 @@ class Heuristic  {
     return tipoDirec;
 
   }//fin tipoDeireccion (addr
+
 
 
   tipoDirecBc1 (addr){

@@ -31,7 +31,6 @@ class Conex{
             //Si los encontramos los devolvemos
             if( datosTxNN[i].idTx == idTx ){
                 datos = datosTxNN[i].datos;
-                //divGifAnimado.hide();
                 return datos;
 
             }//fin if( datosTxNN[i].idTx == idTx
@@ -39,15 +38,15 @@ class Conex{
         }//fin for(let i=0; i<datosTxNN.length; i++)
 
 
-        await fetch("https://btcbook.nownodes.io/api/v2/tx/" + idTx , this.requestOptions)
+        await fetch( "https://btcbook.nownodes.io/api/v2/tx/" + idTx , this.requestOptions )
             .then(response => {
                                datos = response.json();
                                divGifAnimado.show();  
                               })
             // .catch(error => alert( error))
             .catch(error => console.log('Error: ', error));
- 
         
+
         //Añadimos los datos
         datosTxNN.push({ 
                             'idTx'       : idTx ,  
@@ -62,8 +61,43 @@ class Conex{
 
     async getAddrNN(idAddr) {
 
+        let datos, datosUtxo;
+
+        await fetch( "https://btcbook.nownodes.io/api/v2/address/" + idAddr , this.requestOptions )
+            .then(response => { 
+                                datos = response.json();
+                                divGifAnimado.show();
+                              })
+            .catch(error => alert( error))
+            .catch(error => console.log('error', error));
+
+        //UTXO
+        // await fetch( "https://btcbook.nownodes.io/api/v2/utxo/" + idAddr , this.requestOptions )
+        //     .then(response => { 
+        //                         datosUtxo = response.json();
+        //                         divGifAnimado.show();
+        //                       })
+        //     .catch(error => alert( error))
+        //     .catch(error => console.log('error', error));
+        
+        
+        // //Añadimos los datos
+        // datosAddrNN.push({ 
+        //     'idAddr'        : idAddr ,  
+        //     'datos'         : datos,  
+        //     'datosUtxo'     : datosUtxo,
+        // });
+
+                    
+        return datos;
+  
+    }//fin getAddrNN(idAddr)
+
+
+    async getUtxoNN( idAddr ) {
+
         let datos;
-        await fetch("https://btcbook.nownodes.io/api/v2/address/" + idAddr , this.requestOptions)
+        await fetch( "https://btcbook.nownodes.io/api/v2/utxo/" + idAddr , this.requestOptions )
             .then(response => { 
                                 datos = response.json();
                                 divGifAnimado.show();
@@ -75,8 +109,6 @@ class Conex{
         return datos;
   
     }//fin getAddrNN(idAddr)
-
-
     
 
 

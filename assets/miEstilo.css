@@ -120,6 +120,23 @@
   color: #e6e9ec;
   background-color: rgb(90, 87, 87);
 }
+.botonCargaTx{
+  transition: all .5s ease;
+  /* color: rgba(8, 8, 8, 0.733); */
+  border: 0px solid rgb(213, 119, 34);
+  text-align: center;
+  line-height: 1;
+  background-color : transparent;
+  font-size   : 22px;
+  outline: none;
+  /* border-radius: 6px; */
+  width: 140px;
+  height: 44px;
+}
+.botonCargaTx:hover {
+  color: #e6e9ec;
+  /* background-color: rgb(90, 87, 87); */
+}
 .literalPie{
   /* transition: all .5s ease; */
   font-family : 'Roboto', sans-serif;
@@ -313,6 +330,25 @@
   color: #e6e9ec;
   background-color: rgb(90, 87, 87);
 }
+.botonSave{
+  transition: all .5s ease;
+  color: rgba(8, 8, 8, 0.733);
+  border: 2px solid rgb(95, 118, 219);
+  text-align: center;
+  line-height: 1;
+  background-color : transparent;
+  outline: none;
+  border-radius: 6px;
+  width: 80px;
+  font-size: 15px;
+}
+.botonSave:hover {
+  color: #e6e9ec;
+  background-color: rgb(90, 87, 87);
+}
+
+
+
 .buttonTag{
   /* transition: all .5s ease; */
   color: rgba(8, 8, 8, 0.733);
@@ -426,7 +462,7 @@
   padding-top: 0px;   
 }
 #idBotonAyudaPrimPan:hover {
-  border: 2px solid rgb(95, 118, 219);
+  border: 2px solid rgb(43, 11, 104);
 }
 
 #idPlay{

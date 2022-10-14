@@ -12,7 +12,8 @@ class Conex{
         this.respuesta      = Array();
 
         this.myHeaders      = new Headers();
-        this.myHeaders.append("api-key", "d3173f71-8546-4469-8bd6-d0982edd963d");
+        //this.myHeaders.append("api-key", "d3173f71-8546-4469-8bd6-d0982edd963d");
+        this.myHeaders.append("api-key", "cb4607e5-8645-47e5-aa58-2ef7965d3f82");
         this.requestOptions = {
                                 method        : 'GET',
                                 headers       : this.myHeaders,

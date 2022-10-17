@@ -909,7 +909,8 @@ class Bchain  {
 
                 }else{
                     // No hacemos nada
-                    // fill('green');
+                    // fill('green');n
+                    
 
                 }//fin if(posiTxs[i].heuristic[j]
 
@@ -3260,7 +3261,8 @@ class Bchain  {
         let arrResul = Array(false,false,false,false,false,false,false,false);
 //console.log(vin);
     
-        if(vin.isAddress){
+        //OJO parche para que se muestren heurísticas
+        if(vin[0].isAddress){
 
             myHeuristic.inputs  = vin;
             myHeuristic.out     = vout;

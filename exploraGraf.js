@@ -223,6 +223,7 @@ idTx = "993ced02486f9aaa5a5ed943141e05e436aac054dcea78a560f0f1860c80415a"
 //idTx = "065cca82c46242a0c197ef1cfd3e811dd7760c68fd5929c9ee66dae01db0e00e"
 // idAddr = "3No7RhxmeknFkXKGVkshSisv64fB4NanQZ"
 //idTx                ='2b00e209686b03b09c1f6901477ad3a935c0d568cc6cb5a417bba3fc91bdce74'
+idTx                ='85e72c0814597ec52d2d178b7125af0e3cfa07821912ca81bf4b1fbe4b4b70f2'
 
 let imagenBg;
 

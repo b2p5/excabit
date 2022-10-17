@@ -17,7 +17,8 @@ class Conex{
         this.requestOptions = {
                                 method        : 'GET',
                                 headers       : this.myHeaders,
-                                redirect      : 'follow'
+                                redirect      : 'follow',
+                                
                               };
 
     }//fin constructor
